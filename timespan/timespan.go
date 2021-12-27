@@ -29,12 +29,12 @@ func (ts *TimeSpan) DiffTime(timeStart, timeFinish time.Time) int {
 }
 
 func (ts *TimeSpan) DiffLabel(labelStart, labelFinish string) (n int, err error) {
-	startTime, err := ts.label2Time(labelStart)
+	startTime, err := ts.Label2Time(labelStart)
 	if err != nil {
 		return
 	}
 
-	finishTime, err := ts.label2Time(labelFinish)
+	finishTime, err := ts.Label2Time(labelFinish)
 
 	if err != nil {
 		return
@@ -45,6 +45,6 @@ func (ts *TimeSpan) DiffLabel(labelStart, labelFinish string) (n int, err error)
 	return
 }
 
-func (ts *TimeSpan) label2Time(l string) (t time.Time, err error) {
+func (ts *TimeSpan) Label2Time(l string) (t time.Time, err error) {
 	return time.ParseInLocation(humanLayout, l, time.Local)
 }
