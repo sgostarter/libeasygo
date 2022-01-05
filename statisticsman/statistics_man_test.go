@@ -53,9 +53,11 @@ func TestStatisticsMan(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, redisCli)
 
-	r := NewStatisticsReaderEx(impl.NewRedisDataProvider(redisCli), impl.NewTimeSpan(time.Second*5))
-	w := NewStatisticsWriterEx(context.Background(), counter.NewTimeSpanCounters(impl.NewTimeSpan(time.Second*5)),
-		impl.NewRedisCounterStorage(redisCli, nil), nil)
+	r := NewStatisticsReaderEx(impl.NewRedisDataProvider(redisCli), impl.NewTimeSpan(time.Second*5), "")
+
+	tsCounter := counter.NewTimeSpanCounters(impl.NewTimeSpan(time.Second * 5))
+	w := NewStatisticsWriterEx(tsCounter, counter.NewAsyncStore(context.Background(), impl.NewRedisCounterStorage(redisCli, nil),
+		tsCounter, nil))
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
@@ -135,7 +137,7 @@ func TestStatisticsMan2(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, redisCli)
 
-	r := NewStatisticsReaderEx(impl.NewRedisDataProvider(redisCli), impl.NewTimeSpan(time.Second*5))
+	r := NewStatisticsReaderEx(impl.NewRedisDataProvider(redisCli), impl.NewTimeSpan(time.Second*5), "")
 
 	dk := &testDataKey{}
 	err = r.FlushAndRemoveLastHourData(dk, 10000, func(timeSpanS string, k inters.DataKey, v int64, err error) error {

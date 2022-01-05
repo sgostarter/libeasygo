@@ -16,13 +16,15 @@ type StatisticsWriter interface {
 }
 
 func NewStatisticsWriter(redisCli *redis.Client, logger l.Wrapper) StatisticsWriter {
-	return NewStatisticsWriterEx(context.Background(), counter.NewTimeSpanCounters(impl.NewHourTimeSpan()),
-		impl.NewRedisCounterStorage(redisCli, logger), logger)
+	tsCounter := counter.NewTimeSpanCounters(impl.NewHourTimeSpan())
+
+	return NewStatisticsWriterEx(tsCounter, counter.NewAsyncStore(context.Background(), impl.NewRedisCounterStorage(redisCli, logger),
+		tsCounter, logger))
 }
 
-func NewStatisticsWriterEx(ctx context.Context, tsCounters *counter.TimeSpanCounters, storage inters.Storage, logger l.Wrapper) StatisticsWriter {
+func NewStatisticsWriterEx(tsCounters *counter.TimeSpanCounters, asyncStore *counter.AsyncStore) StatisticsWriter {
 	return &statisticsWriterImpl{
-		asyncStore: counter.NewAsyncStore(ctx, storage, tsCounters, logger),
+		asyncStore: asyncStore,
 		tsCounters: tsCounters,
 	}
 }

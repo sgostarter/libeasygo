@@ -18,13 +18,15 @@ type AsyncStore struct {
 	counters     *TimeSpanCounters
 	logger       l.Wrapper
 	syncDuration time.Duration
+	tsPre        string
 }
 
 func NewAsyncStore(ctx context.Context, stg inters.Storage, counters *TimeSpanCounters, logger l.Wrapper) *AsyncStore {
-	return NewAsyncStoreEx(ctx, stg, counters, logger, 0)
+	return NewAsyncStoreEx(ctx, stg, counters, logger, 0, "")
 }
 
-func NewAsyncStoreEx(ctx context.Context, stg inters.Storage, counters *TimeSpanCounters, logger l.Wrapper, syncDuration time.Duration) *AsyncStore {
+func NewAsyncStoreEx(ctx context.Context, stg inters.Storage, counters *TimeSpanCounters, logger l.Wrapper,
+	syncDuration time.Duration, tsPre string) *AsyncStore {
 	ctx, cancel := context.WithCancel(ctx)
 
 	if logger == nil {
@@ -44,6 +46,7 @@ func NewAsyncStoreEx(ctx context.Context, stg inters.Storage, counters *TimeSpan
 		counters:     counters,
 		logger:       logger,
 		syncDuration: syncDuration,
+		tsPre:        tsPre,
 	}
 
 	s.wg.Add(1)
@@ -106,7 +109,7 @@ func (s *AsyncStore) store() {
 		for kv, c := range counters.GetCounters() {
 			cnt := c.HC()
 			if cnt > 0 {
-				s.stg.Inc(timeS, kv, cnt)
+				s.stg.Inc(s.tsPre+timeS, kv, cnt)
 			}
 		}
 
