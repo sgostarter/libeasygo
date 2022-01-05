@@ -18,10 +18,10 @@ type StatisticsReader interface {
 }
 
 func NewStatisticsReader(redisCli *redis.Client) StatisticsReader {
-	return NewStatisticsReaderEx(impl.NewRedisDataProvider(redisCli), impl.NewHourTimeSpan())
+	return NewStatisticsReaderEx(impl.NewRedisDataProvider(redisCli), impl.NewHourTimeSpan(), "")
 }
 
-func NewStatisticsReaderEx(dataProvider inters.DataProvider, timeSpan counter.TimeSpan) StatisticsReader {
+func NewStatisticsReaderEx(dataProvider inters.DataProvider, timeSpan counter.TimeSpan, tsPre string) StatisticsReader {
 	if dataProvider == nil || timeSpan == nil {
 		return nil
 	}
@@ -29,12 +29,14 @@ func NewStatisticsReaderEx(dataProvider inters.DataProvider, timeSpan counter.Ti
 	return &statisticsReaderImpl{
 		dataProvider: dataProvider,
 		timeSpan:     timeSpan,
+		tsPre:        tsPre,
 	}
 }
 
 type statisticsReaderImpl struct {
 	dataProvider inters.DataProvider
 	timeSpan     counter.TimeSpan
+	tsPre        string
 }
 
 func (impl *statisticsReaderImpl) Scan4Current(dataKey inters.DataKey, cb StatisticsScanResultCB) error {
@@ -42,7 +44,7 @@ func (impl *statisticsReaderImpl) Scan4Current(dataKey inters.DataKey, cb Statis
 }
 
 func (impl *statisticsReaderImpl) Scan4TimeSpanString(timeSpanS string, dataKey inters.DataKey, cb StatisticsScanResultCB) error {
-	return impl.dataProvider.Scan(timeSpanS, func(rKey, k string, v int64, err error) error {
+	return impl.dataProvider.Scan(impl.tsPre+timeSpanS, func(rKey, k string, v int64, err error) error {
 		if err != nil {
 			err = cb(rKey, nil, v, err)
 
@@ -66,7 +68,6 @@ func (impl *statisticsReaderImpl) FlushAndRemoveLastHourData(dataKey inters.Data
 	}
 
 	for loop := 1; loop <= deepLevel; loop++ {
-		// nolint: durationcheck
 		t := time.Now().Add(-time.Duration(loop) * impl.timeSpan.GetInterval())
 		timeSpanS := impl.timeSpan.GetTimeStringFromTime(t)
 		exists, _ := impl.dataProvider.Exists(timeSpanS)
