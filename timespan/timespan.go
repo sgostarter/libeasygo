@@ -8,16 +8,32 @@ const (
 
 type TimeSpan struct {
 	durationSeconds int64
+	location        *time.Location
+	locationOffset  int
 }
 
 func NewTimeSpan(duration time.Duration) *TimeSpan {
+	return NewTimeSpanEx(duration, nil)
+}
+
+func NewTimeSpanEx(duration time.Duration, location *time.Location) *TimeSpan {
+	if location == nil {
+		location = time.Local
+	}
+
+	_, locationOffset := time.Now().In(location).Zone()
+
 	return &TimeSpan{
 		durationSeconds: int64(duration / time.Second),
+		location:        location,
+		locationOffset:  locationOffset,
 	}
 }
 
 func (ts *TimeSpan) GetLabel(t time.Time) string {
-	return time.Unix(t.Unix()-t.Unix()%ts.durationSeconds, 0).Format(humanLayout)
+	tUnix := t.Unix() + int64(ts.locationOffset)
+
+	return time.Unix(tUnix-tUnix%ts.durationSeconds-int64(ts.locationOffset), 0).Format(humanLayout)
 }
 
 func (ts *TimeSpan) GetCurrentLabel() string {
