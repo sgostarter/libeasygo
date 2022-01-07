@@ -105,16 +105,16 @@ func TestTimeSpan4Day(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, days, 1)
 
-	tm1, err := time.Parse("2006-01-02 15:04:05", "2021-11-01 15:11:52")
+	tm1, err := time.ParseInLocation("2006-01-02 15:04:05", "2021-11-01 15:11:52", time.Local)
 	assert.Nil(t, err)
 
-	tm2, err := time.Parse("2006-01-02 15:04:05", "2021-11-01 23:59:59")
+	tm2, err := time.ParseInLocation("2006-01-02 15:04:05", "2021-11-01 23:59:59", time.Local)
 	assert.Nil(t, err)
 
-	tm3, err := time.Parse("2006-01-02 15:04:05", "2021-11-02 00:00:00")
+	tm3, err := time.ParseInLocation("2006-01-02 15:04:05", "2021-11-02 00:00:00", time.Local)
 	assert.Nil(t, err)
 
-	tm4, err := time.Parse("2006-01-02 15:04:05", "2021-12-01 15:11:52")
+	tm4, err := time.ParseInLocation("2006-01-02 15:04:05", "2021-12-01 15:11:52", time.Local)
 	assert.Nil(t, err)
 
 	days, err = ts.DiffLabel(ts.GetLabel(tm1), ts.GetLabel(tm2))
@@ -128,4 +128,44 @@ func TestTimeSpan4Day(t *testing.T) {
 	days, err = ts.DiffLabel(ts.GetLabel(tm1), ts.GetLabel(tm4))
 	assert.Nil(t, err)
 	assert.Equal(t, days, 30)
+}
+
+func TestTimeSpan1Day(t *testing.T) {
+	ts := NewTimeSpan(time.Hour * 24)
+
+	timeNow := time.Now()
+
+	s := ts.GetLabel(timeNow)
+	t.Log(s)
+
+	t2, err := ts.Label2Time(s)
+	assert.Nil(t, err)
+	t.Log(t2)
+
+	timeNow = timeNow.Add(-time.Duration(timeNow.Hour()) * time.Hour)
+	timeNow = timeNow.Add(-time.Duration(timeNow.Minute()) * time.Minute)
+	timeNow = timeNow.Add(-time.Duration(timeNow.Second()) * time.Second)
+	t.Log(timeNow)
+	t.Log(timeNow.Format(humanLayout))
+
+	sB := ts.GetLabel(timeNow)
+	t.Log(sB)
+
+	t2, err = ts.Label2Time(s)
+	assert.Nil(t, err)
+	t.Log(t2)
+
+	timeNow = timeNow.Add(24*time.Hour - time.Second)
+	sE := ts.GetLabel(timeNow)
+	t.Log(sE)
+
+	assert.Equal(t, sB, sE)
+}
+
+func Test1(t *testing.T) {
+	s, v := time.Now().In(time.Local).Zone()
+	t.Log(s, v)
+
+	s, v = time.Now().In(time.UTC).Zone()
+	t.Log(s, v)
 }
