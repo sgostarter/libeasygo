@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/go-redis/redis/v8 v8.11.4
-	github.com/sgostarter/i v0.1.0
+	github.com/sgostarter/i v0.1.1
 	github.com/sgostarter/libconfig v0.0.0-20211221083720-b4e6c5547d3f
 	github.com/stretchr/testify v1.7.0
 	gorm.io/driver/mysql v1.2.1
