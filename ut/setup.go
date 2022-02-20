@@ -7,12 +7,17 @@ import (
 )
 
 func SetupUTConfig() *Config {
-	return SetupUTConfigEx("config.yaml")
+	return SetupUTConfigEx("config.yaml", nil)
 }
 
-func SetupUTConfigEx(fileName string) *Config {
+func SetupUTConfigEx(fileName string, configPaths []string) *Config {
 	cfg := &Config{}
-	_, err := libconfig.Load(fileName, cfg)
+	var err error
+	if len(configPaths) == 0 {
+		_, err = libconfig.Load(fileName, cfg)
+	} else {
+		_, err = libconfig.LoadOnConfigPath(fileName, configPaths, cfg)
+	}
 
 	if err != nil {
 		return nil
@@ -22,11 +27,11 @@ func SetupUTConfigEx(fileName string) *Config {
 }
 
 func SetupUTConfig4Redis(t *testing.T) *Config {
-	return SetupUTConfig4RedisEx("config.yaml", t)
+	return SetupUTConfig4RedisEx("config.yaml", nil, t)
 }
 
-func SetupUTConfig4RedisEx(fileName string, t *testing.T) *Config {
-	cfg := SetupUTConfigEx(fileName)
+func SetupUTConfig4RedisEx(fileName string, configPaths []string, t *testing.T) *Config {
+	cfg := SetupUTConfigEx(fileName, configPaths)
 	if cfg == nil || cfg.RedisDNS == "" {
 		t.SkipNow()
 
