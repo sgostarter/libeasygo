@@ -46,7 +46,11 @@ func (qps *QPS) Gets() []int64 {
 	curIndex := time.Now().Unix()
 
 	for idx := curIndex - 1; idx > curIndex-int64(len(qps.ds)); idx-- {
-		vs = append(vs, atomic.LoadInt64(&qps.ds[idx%int64(len(qps.ds))].v))
+		if qps.ds[idx].unix == idx {
+			vs = append(vs, atomic.LoadInt64(&qps.ds[idx%int64(len(qps.ds))].v))
+		} else {
+			vs = append(vs, 0)
+		}
 	}
 
 	return vs

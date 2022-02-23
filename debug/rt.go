@@ -67,12 +67,34 @@ func (impl *rtImpl) chRoutine() {
 
 	var count, rtSum int64
 
+	fnTrim := func() {
+		if impl.internal <= 0 {
+			return
+		}
+
+		for start := (bufferIdx - 1) % bufferSize; start != bufferIdx%bufferSize; start-- {
+			if buffer[start] == nil {
+				break
+			}
+
+			if buffer[start].finish.After(time.Now().Add(-impl.internal)) {
+				break
+			}
+
+			count--
+
+			rtSum -= buffer[start].finish.UnixNano() - buffer[start].start.UnixNano()
+		}
+	}
+
 	for loop {
 		select {
 		case <-impl.ctx.Done():
 			loop = false
 
 			continue
+		case <-time.After(time.Second):
+			fnTrim()
 		case v := <-impl.chV:
 			idx := bufferIdx % bufferSize
 			if buffer[idx] != nil {
@@ -90,21 +112,7 @@ func (impl *rtImpl) chRoutine() {
 
 			bufferIdx++
 
-			if impl.internal > 0 {
-				for start := (bufferIdx - 1) % bufferSize; start != bufferIdx%bufferSize; start-- {
-					if buffer[start] == nil {
-						break
-					}
-
-					if buffer[start].finish.After(time.Now().Add(-impl.internal)) {
-						break
-					}
-
-					count--
-
-					rtSum -= buffer[start].finish.UnixNano() - buffer[start].start.UnixNano()
-				}
-			}
+			fnTrim()
 		}
 	}
 }
