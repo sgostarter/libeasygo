@@ -1,4 +1,4 @@
-package qps
+package debug
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func TestQPS(t *testing.T) {
-	qps := New(4)
+	qps := NewQPS(4)
 
 	var wg sync.WaitGroup
 
