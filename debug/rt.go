@@ -63,9 +63,29 @@ func (impl *rtImpl) chRoutine() {
 
 	bufferSize := 1000
 	buffer := make([]*rtProbeData, bufferSize)
-	bufferIdx := 0
+	bufferIdx := bufferSize * 10
 
 	var count, rtSum int64
+
+	fnTrim := func() {
+		if impl.internal <= 0 {
+			return
+		}
+
+		for start := bufferIdx - 1; start%bufferSize != bufferIdx%bufferSize; start-- {
+			if buffer[start%bufferSize] == nil {
+				break
+			}
+
+			if buffer[start%bufferSize].finish.After(time.Now().Add(-impl.internal)) {
+				break
+			}
+
+			count--
+
+			rtSum -= buffer[start%bufferSize].finish.UnixNano() - buffer[start%bufferSize].start.UnixNano()
+		}
+	}
 
 	for loop {
 		select {
@@ -73,6 +93,8 @@ func (impl *rtImpl) chRoutine() {
 			loop = false
 
 			continue
+		case <-time.After(time.Second):
+			fnTrim()
 		case v := <-impl.chV:
 			idx := bufferIdx % bufferSize
 			if buffer[idx] != nil {
@@ -89,22 +111,11 @@ func (impl *rtImpl) chRoutine() {
 			impl.avg.Store(float64(rtSum/1e6) / float64(count))
 
 			bufferIdx++
-
-			if impl.internal > 0 {
-				for start := (bufferIdx - 1) % bufferSize; start != bufferIdx%bufferSize; start-- {
-					if buffer[start] == nil {
-						break
-					}
-
-					if buffer[start].finish.After(time.Now().Add(-impl.internal)) {
-						break
-					}
-
-					count--
-
-					rtSum -= buffer[start].finish.UnixNano() - buffer[start].start.UnixNano()
-				}
+			if bufferIdx > 0xFFFFFFF {
+				bufferIdx = bufferSize * 10
 			}
+
+			fnTrim()
 		}
 	}
 }
