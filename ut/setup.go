@@ -12,7 +12,9 @@ func SetupUTConfig() *Config {
 
 func SetupUTConfigEx(fileName string, configPaths []string) *Config {
 	cfg := &Config{}
+
 	var err error
+
 	if len(configPaths) == 0 {
 		_, err = libconfig.Load(fileName, cfg)
 	} else {
