@@ -1,4 +1,4 @@
-package qps
+package debug
 
 import (
 	"fmt"
