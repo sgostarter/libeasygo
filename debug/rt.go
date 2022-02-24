@@ -84,6 +84,8 @@ func (impl *rtImpl) chRoutine() {
 			count--
 
 			rtSum -= buffer[start%bufferSize].finish.UnixNano() - buffer[start%bufferSize].start.UnixNano()
+
+			buffer[start%bufferSize] = nil
 		}
 	}
 
