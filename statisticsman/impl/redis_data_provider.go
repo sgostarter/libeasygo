@@ -31,7 +31,15 @@ func (impl *redisDataProviderImpl) Exists(k string) (exists bool, err error) {
 	return
 }
 
+func (impl *redisDataProviderImpl) ScanEx(k string, cb inters.DataScannerCB, reset bool) error {
+	return impl.scanImpl(k, cb, reset)
+}
+
 func (impl *redisDataProviderImpl) Scan(k string, cb inters.DataScannerCB) error {
+	return impl.scanImpl(k, cb, false)
+}
+
+func (impl *redisDataProviderImpl) scanImpl(k string, cb inters.DataScannerCB, reset bool) error {
 	if cb == nil {
 		return commerr.ErrInvalidArgument
 	}
@@ -53,6 +61,12 @@ func (impl *redisDataProviderImpl) Scan(k string, cb inters.DataScannerCB) error
 				err = cb(k, keys[idx], v, err)
 				if err != nil {
 					break
+				}
+				if reset {
+					err = impl.redisCli.HIncrBy(context.Background(), k, keys[idx], -v).Err()
+					if err != nil {
+						break
+					}
 				}
 			}
 		}

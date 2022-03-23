@@ -15,6 +15,10 @@ type StatisticsReader interface {
 	Scan4Current(dataKey inters.DataKey, cb StatisticsScanResultCB) error
 	Scan4TimeSpanString(timeSpanS string, dataKey inters.DataKey, cb StatisticsScanResultCB) error
 	FlushAndRemoveLastHourData(dataKey inters.DataKey, deepLevel int, cb StatisticsScanResultCB) error
+
+	Scan4CurrentEx(dataKey inters.DataKey, cb StatisticsScanResultCB, reset bool) error
+	Scan4TimeSpanStringEx(timeSpanS string, dataKey inters.DataKey, cb StatisticsScanResultCB, reset bool) error
+	FlushAndRemoveLastHourDataEx(dataKey inters.DataKey, deepLevel int, cb StatisticsScanResultCB, reset bool) error
 }
 
 func NewStatisticsReader(redisCli *redis.Client) StatisticsReader {
@@ -40,11 +44,19 @@ type statisticsReaderImpl struct {
 }
 
 func (impl *statisticsReaderImpl) Scan4Current(dataKey inters.DataKey, cb StatisticsScanResultCB) error {
-	return impl.Scan4TimeSpanString(impl.timeSpan.GetNowTimeString(), dataKey, cb)
+	return impl.Scan4CurrentEx(dataKey, cb, false)
+}
+
+func (impl *statisticsReaderImpl) Scan4CurrentEx(dataKey inters.DataKey, cb StatisticsScanResultCB, reset bool) error {
+	return impl.Scan4TimeSpanStringEx(impl.timeSpan.GetNowTimeString(), dataKey, cb, reset)
 }
 
 func (impl *statisticsReaderImpl) Scan4TimeSpanString(timeSpanS string, dataKey inters.DataKey, cb StatisticsScanResultCB) error {
-	return impl.dataProvider.Scan(impl.tsPre+timeSpanS, func(rKey, k string, v int64, err error) error {
+	return impl.Scan4TimeSpanStringEx(timeSpanS, dataKey, cb, false)
+}
+
+func (impl *statisticsReaderImpl) Scan4TimeSpanStringEx(timeSpanS string, dataKey inters.DataKey, cb StatisticsScanResultCB, reset bool) error {
+	return impl.dataProvider.ScanEx(impl.tsPre+timeSpanS, func(rKey, k string, v int64, err error) error {
 		if err != nil {
 			err = cb(rKey, nil, v, err)
 
@@ -59,10 +71,18 @@ func (impl *statisticsReaderImpl) Scan4TimeSpanString(timeSpanS string, dataKey 
 		}
 
 		return err
-	})
+	}, reset)
+}
+
+func (impl *statisticsReaderImpl) FlushAndRemoveLastHourDataEx(dataKey inters.DataKey, deepLevel int, cb StatisticsScanResultCB, reset bool) error {
+	return impl.flushAndRemoveLastHourData(dataKey, deepLevel, cb, reset)
 }
 
 func (impl *statisticsReaderImpl) FlushAndRemoveLastHourData(dataKey inters.DataKey, deepLevel int, cb StatisticsScanResultCB) (err error) {
+	return impl.FlushAndRemoveLastHourDataEx(dataKey, deepLevel, cb, false)
+}
+
+func (impl *statisticsReaderImpl) flushAndRemoveLastHourData(dataKey inters.DataKey, deepLevel int, cb StatisticsScanResultCB, reset bool) (err error) {
 	if deepLevel <= 0 {
 		deepLevel = 1
 	}
@@ -76,7 +96,7 @@ func (impl *statisticsReaderImpl) FlushAndRemoveLastHourData(dataKey inters.Data
 			continue
 		}
 
-		err = impl.Scan4TimeSpanString(timeSpanS, dataKey, cb)
+		err = impl.Scan4TimeSpanStringEx(timeSpanS, dataKey, cb, reset)
 		if err != nil {
 			break
 		}
