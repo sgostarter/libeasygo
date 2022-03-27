@@ -7,7 +7,7 @@ import (
 )
 
 func SetupUTConfig() *Config {
-	return SetupUTConfigEx("config.yaml", nil)
+	return SetupUTConfigEx("ut.yaml", nil)
 }
 
 func SetupUTConfigEx(fileName string, configPaths []string) *Config {
@@ -29,7 +29,7 @@ func SetupUTConfigEx(fileName string, configPaths []string) *Config {
 }
 
 func SetupUTConfig4Redis(t *testing.T) *Config {
-	return SetupUTConfig4RedisEx("config.yaml", nil, t)
+	return SetupUTConfig4RedisEx("ut.yaml", nil, t)
 }
 
 func SetupUTConfig4RedisEx(fileName string, configPaths []string, t *testing.T) *Config {
