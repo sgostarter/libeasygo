@@ -16,4 +16,6 @@ var (
 	ErrUnavailable       = errors.New("unavailable")
 	ErrUnauthenticated   = errors.New("unauthenticated")
 	ErrResourceExhausted = errors.New("resourceExhausted")
+	ErrReject            = errors.New("reject")
+	ErrCrash             = errors.New("crash")
 )
