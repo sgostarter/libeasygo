@@ -1,4 +1,4 @@
-package aescbcpkcs5
+package aes
 
 import (
 	"crypto/aes"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func Encrypt(origData, key []byte) ([]byte, error) {
+func CBCEncrypt(origData, key []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, fmt.Errorf("new cipher failed: %w", err)
@@ -21,7 +21,7 @@ func Encrypt(origData, key []byte) ([]byte, error) {
 	return crypted, nil
 }
 
-func Decrypt(encryptedData, key []byte) ([]byte, error) {
+func CBCDecrypt(encryptedData, key []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, fmt.Errorf("new cipher failed: %w", err)

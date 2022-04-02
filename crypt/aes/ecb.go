@@ -1,4 +1,4 @@
-package aescbcpkcs5
+package aes
 
 import "crypto/cipher"
 

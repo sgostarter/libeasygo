@@ -1,4 +1,4 @@
-package aescbcpkcs5
+package aes
 
 import (
 	"crypto/aes"
@@ -14,7 +14,7 @@ const (
 	PaddingTypePKCS7
 )
 
-func AESECBEncrypt(origData, key []byte) (encryptedData []byte, err error) {
+func ECBEncrypt(origData, key []byte) (encryptedData []byte, err error) {
 	defer func() {
 		if errR := recover(); errR != nil {
 			err = commerr.ErrCrash
@@ -35,7 +35,7 @@ func AESECBEncrypt(origData, key []byte) (encryptedData []byte, err error) {
 	return
 }
 
-func AESECBEncryptEx(origData, key []byte, paddingType PaddingType) (encryptedData []byte, err error) {
+func ECBEncryptEx(origData, key []byte, paddingType PaddingType) (encryptedData []byte, err error) {
 	defer func() {
 		if errR := recover(); errR != nil {
 			err = commerr.ErrCrash
@@ -66,7 +66,7 @@ func AESECBEncryptEx(origData, key []byte, paddingType PaddingType) (encryptedDa
 	return
 }
 
-func AESECBDecrypt(encryptedData, key []byte) (origData []byte, err error) {
+func ECBDecrypt(encryptedData, key []byte) (origData []byte, err error) {
 	defer func() {
 		if errR := recover(); errR != nil {
 			err = commerr.ErrCrash
@@ -86,7 +86,7 @@ func AESECBDecrypt(encryptedData, key []byte) (origData []byte, err error) {
 	return
 }
 
-func AESECBDecryptEx(encryptedData, key []byte, paddingType PaddingType) (origData []byte, err error) {
+func ECBDecryptEx(encryptedData, key []byte, paddingType PaddingType) (origData []byte, err error) {
 	defer func() {
 		if errR := recover(); errR != nil {
 			err = commerr.ErrCrash
