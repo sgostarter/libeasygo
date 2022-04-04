@@ -11,7 +11,7 @@ const (
 	TimeoutInfinity = time.Duration(-1)
 )
 
-// TryWithTimeout timeout=0 代表不重试，timeout<0代表无限重试
+// TryWithTimeout timeout=0 代表不重试，TimeoutInfinity 代表无限重试
 func TryWithTimeout(timeout time.Duration, try func(timeout time.Duration) bool) (ok bool, err error) {
 	if try == nil {
 		err = cuserror.NewWithErrorMsg("noTryFunction")
@@ -26,6 +26,10 @@ func TryWithTimeout(timeout time.Duration, try func(timeout time.Duration) bool)
 		ok = try(to)
 		if ok {
 			break
+		}
+
+		if timeout == TimeoutInfinity {
+			continue
 		}
 
 		if timeout <= 0 {
@@ -62,6 +66,26 @@ func TryWithTimeoutContext(ctx context.Context, try func(ctx context.Context) bo
 			continue
 		default:
 		}
+	}
+
+	return
+}
+
+func TryByMaxCount(try func(cnt int) bool, maxTry int) (ok bool, err error) {
+	if try == nil {
+		err = cuserror.NewWithErrorMsg("noTryFunction")
+
+		return
+	}
+
+	var n int
+	for n < maxTry {
+		ok = try(n)
+		if ok {
+			return
+		}
+
+		n++
 	}
 
 	return
