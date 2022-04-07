@@ -122,3 +122,7 @@ func (s *AsyncStore) store() {
 		s.counters.Remove(removedTimeS)
 	}
 }
+
+func (s *AsyncStore) Add(timeS string, k inters.DataKey, v int64) {
+	s.stg.Inc(s.tsPre+timeS, k.Key(), v)
+}

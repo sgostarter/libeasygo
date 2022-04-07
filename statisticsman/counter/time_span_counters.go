@@ -26,6 +26,10 @@ func NewTimeSpanCounters(ts TimeSpan) *TimeSpanCounters {
 	}
 }
 
+func (tsc *TimeSpanCounters) GetTimeSpan() TimeSpan {
+	return tsc.ts
+}
+
 func (tsc *TimeSpanCounters) get(ts string) *KeyCounters {
 	tsc.lock.RLock()
 	defer tsc.lock.RUnlock()

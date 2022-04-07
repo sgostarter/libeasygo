@@ -13,6 +13,7 @@ import (
 type StatisticsWriter interface {
 	Inc(k inters.DataKey)
 	Add(k inters.DataKey, v int64)
+	AddSync(k inters.DataKey, v int64)
 }
 
 func NewStatisticsWriter(redisCli *redis.Client, logger l.Wrapper) StatisticsWriter {
@@ -40,4 +41,8 @@ func (impl *statisticsWriterImpl) Inc(k inters.DataKey) {
 
 func (impl *statisticsWriterImpl) Add(k inters.DataKey, v int64) {
 	impl.tsCounters.Get().GetCounter(k.Key()).Add(v)
+}
+
+func (impl *statisticsWriterImpl) AddSync(k inters.DataKey, v int64) {
+	impl.asyncStore.Add(impl.tsCounters.GetTimeSpan().GetNowTimeString(), k, v)
 }
