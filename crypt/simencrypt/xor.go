@@ -2,15 +2,26 @@ package simencrypt
 
 import (
 	"strconv"
+
+	"github.com/sgostarter/libeasygo/commerr"
 )
 
-var __defXorKey = []byte{0xB2, 0x09, 0xBB, 0x55, 0x93, 0x6D, 0x44, 0x47}
+var _DefXorKey = []byte{0xB2, 0x09, 0xBB, 0x55, 0x93, 0x6D, 0x44, 0x47}
+
+type StringEnDecrypter interface {
+	Encrypt(src string) string
+	Decrypt(src string) string
+}
 
 func NewXor() *Xor {
-	return NewXorEx(__defXorKey)
+	return NewXorEx(_DefXorKey)
 }
 
 func NewXorEx(key []byte) *Xor {
+	if len(key) == 0 {
+		key = _DefXorKey
+	}
+
 	return &Xor{
 		key: key,
 	}
@@ -21,19 +32,34 @@ type Xor struct {
 }
 
 func (xor *Xor) Encrypt(src string) string {
-	return XorEncryptEx(src, xor.key)
+	s, _ := XorEncryptEx(src, xor.key)
+
+	return s
 }
 
 func (xor *Xor) Decrypt(src string) string {
-	return XorDecryptEx(src, xor.key)
+	s, _ := XorDecryptEx(src, xor.key)
+
+	return s
 }
 
 func XorEncrypt(src string) string {
-	return XorEncryptEx(src, __defXorKey)
+	s, _ := XorEncryptEx(src, _DefXorKey)
+
+	return s
 }
 
-func XorEncryptEx(src string, xorKey []byte) string {
-	var result string
+func XorEncryptE(src string) (string, error) {
+	return XorEncryptEx(src, _DefXorKey)
+}
+
+func XorEncryptEx(src string, xorKey []byte) (result string, err error) {
+	if len(xorKey) == 0 {
+		err = commerr.ErrInvalidArgument
+
+		return
+	}
+
 	j := 0
 	s := ""
 	bt := []rune(src)
@@ -45,15 +71,26 @@ func XorEncryptEx(src string, xorKey []byte) string {
 		result = result + (s)
 		j = (j + 1) % len(xorKey)
 	}
-	return result
+	return
 }
 
 func XorDecrypt(src string) string {
-	return XorDecryptEx(src, __defXorKey)
+	s, _ := XorDecryptEx(src, _DefXorKey)
+
+	return s
 }
 
-func XorDecryptEx(src string, xorKey []byte) string {
-	var result string
+func XorDecryptE(src string) (string, error) {
+	return XorDecryptEx(src, _DefXorKey)
+}
+
+func XorDecryptEx(src string, xorKey []byte) (result string, err error) {
+	if len(xorKey) == 0 {
+		err = commerr.ErrInvalidArgument
+
+		return
+	}
+
 	var s int64
 	j := 0
 	bt := []rune(src)
@@ -62,5 +99,6 @@ func XorDecryptEx(src string, xorKey []byte) string {
 		result = result + string(byte(s)^xorKey[j])
 		j = (j + 1) % len(xorKey)
 	}
-	return result
+
+	return
 }
