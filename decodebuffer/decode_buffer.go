@@ -35,3 +35,7 @@ func (buf *Buffer) FindTerminator() (valid []byte, found bool) {
 
 	return
 }
+
+func (buf *Buffer) Len() int {
+	return len(buf.dataBuffer)
+}
