@@ -148,6 +148,7 @@ func TestStatisticsMan2(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+// nolint: funlen
 func TestStatisticsMan3(t *testing.T) {
 	cfg := ut.SetupUTConfig4Redis(t)
 	redisCli, err := helper.NewRedisClient(cfg.RedisDNS)
@@ -215,9 +216,11 @@ func TestStatisticsMan3(t *testing.T) {
 				m := make(map[string]map[string]int64)
 				fnDo := func(timeSpanS string, k inters.DataKey, v int64, err error) error {
 					assert.Nil(t, err)
+
 					if _, ok := m[timeSpanS]; !ok {
 						m[timeSpanS] = make(map[string]int64)
 					}
+
 					m[timeSpanS][k.Key()] = v
 
 					mapRecv[k.Key()] = mapRecv[k.Key()] + int(v)

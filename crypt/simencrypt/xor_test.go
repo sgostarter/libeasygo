@@ -20,8 +20,10 @@ func TestXor(t *testing.T) {
 	t.Log(XorDecrypt(s1))
 
 	var lastS string
+
 	for idx := 0; idx < 100000; idx++ {
 		buf := make([]byte, 30)
+		// nolint: gosec
 		rand.Read(buf)
 		s = hex.EncodeToString(buf)
 		es := XorEncrypt(s)
@@ -32,8 +34,10 @@ func TestXor(t *testing.T) {
 	}
 
 	xor := NewXorEx([]byte{0x11, 0x11})
+
 	for idx := 0; idx < 1000; idx++ {
 		buf := make([]byte, 30)
+		// nolint: gosec
 		rand.Read(buf)
 		s = hex.EncodeToString(buf)
 		es := xor.Encrypt(s)

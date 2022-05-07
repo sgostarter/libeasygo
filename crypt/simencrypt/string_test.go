@@ -16,6 +16,7 @@ func TestString(t *testing.T) {
 		// nolint: gosec
 		l := rand.Int63() % 0xff
 		buf := make([]byte, l)
+		// nolint: gosec
 		rand.Read(buf)
 		s := hex.EncodeToString(buf)
 		es := EncodeString(s)

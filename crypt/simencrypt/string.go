@@ -23,9 +23,10 @@ func EncodeStringEx(s string, minLen int, seed string) string {
 	l := hex.EncodeToString([]byte{byte(len(s))})
 
 	e := ""
+
 	if len(l)+len(s) < minLen {
 		for idx := 0; idx < minLen-len(l)-len(s); idx++ {
-			e += seed[(int(n)+idx)%len(seed) : (int(n)+idx)%len(seed)+1]
+			e += seed[(n+idx)%len(seed) : (n+idx)%len(seed)+1]
 		}
 	}
 

@@ -61,16 +61,18 @@ func XorEncryptEx(src string, xorKey []byte) (result string, err error) {
 	}
 
 	j := 0
-	s := ""
+
 	bt := []rune(src)
 	for i := 0; i < len(bt); i++ {
-		s = strconv.FormatInt(int64(byte(bt[i])^xorKey[j]), 16)
+		s := strconv.FormatInt(int64(byte(bt[i])^xorKey[j]), 16)
 		if len(s) == 1 {
 			s = "0" + s
 		}
+
 		result = result + (s)
 		j = (j + 1) % len(xorKey)
 	}
+
 	return
 }
 
@@ -92,8 +94,11 @@ func XorDecryptEx(src string, xorKey []byte) (result string, err error) {
 	}
 
 	var s int64
+
 	j := 0
+
 	bt := []rune(src)
+
 	for i := 0; i < len(src)/2; i++ {
 		s, _ = strconv.ParseInt(string(bt[i*2:i*2+2]), 16, 0)
 		result = result + string(byte(s)^xorKey[j])

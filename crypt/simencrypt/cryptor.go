@@ -50,15 +50,13 @@ func (c *Cryptor) DecryptString(s string) (ret string, err error) {
 }
 
 func (c *Cryptor) DecryptStringEx(s string, seed []byte) (ret string, err error) {
-	verifyCode := s[:2]
-
 	ret, err = DecodeString(c.crypt.Decrypt(s[2:]))
 
 	if err != nil {
 		return
 	}
 
-	if verifyCode != c.getPrefix(GetStringIndex(s), seed) {
+	if s[:2] != c.getPrefix(GetStringIndex(s), seed) {
 		err = commerr.ErrOutOfRange
 	}
 
@@ -78,15 +76,13 @@ func (c *Cryptor) DecryptInt64(s string) (ret int64, err error) {
 }
 
 func (c *Cryptor) DecryptInt64Ex(s string, seed []byte) (ret int64, err error) {
-	verifyCode := s[:2]
-
 	ret = DecodeID(c.crypt.Decrypt(s[2:]))
 
 	if err != nil {
 		return
 	}
 
-	if verifyCode != c.getPrefix(int(ret%math.MaxInt), seed) {
+	if s[:2] != c.getPrefix(int(ret%math.MaxInt), seed) {
 		err = commerr.ErrOutOfRange
 	}
 

@@ -37,10 +37,10 @@ func TestNewPrioritySchedulerSerial(t *testing.T) {
 	})
 
 	resp = schedulerSerial.Do(context.Background())
-	assert.Equal(t, resp.(string), "1-1")
+	assert.EqualValues(t, resp, "1-1")
 
 	resp = schedulerSerial.Do(context.Background())
-	assert.Equal(t, resp.(string), "1-1")
+	assert.EqualValues(t, resp, "1-1")
 
 	scheduler = schedulerSerial.NewSerialPriorityScheduler()
 	scheduler.AddRunner(1, &TestPriorityRunner{
@@ -49,7 +49,7 @@ func TestNewPrioritySchedulerSerial(t *testing.T) {
 	})
 
 	resp = schedulerSerial.Do(context.Background())
-	assert.Equal(t, resp.(string), "1-1")
+	assert.EqualValues(t, resp, "1-1")
 }
 
 func TestNewPrioritySchedulerSerial2(t *testing.T) {
@@ -72,7 +72,7 @@ func TestNewPrioritySchedulerSerial2(t *testing.T) {
 	resp = schedulerSerial.Do(context.Background())
 
 	assert.True(t, time.Since(timeStart) > 2*time.Second)
-	assert.Equal(t, resp.(string), "1-2")
+	assert.EqualValues(t, resp, "1-2")
 }
 
 func TestNewPrioritySchedulerSerial3(t *testing.T) {

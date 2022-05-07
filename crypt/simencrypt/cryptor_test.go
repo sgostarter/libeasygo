@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// nolint
 func TestCryptor(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 

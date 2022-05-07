@@ -36,7 +36,7 @@ func TestPS(t *testing.T) {
 	})
 
 	resp := scheduler.Do(context.Background())
-	assert.Equal(t, resp.(string), "1-1")
+	assert.EqualValues(t, resp, "1-1")
 
 	//
 	scheduler = New()
@@ -54,7 +54,7 @@ func TestPS(t *testing.T) {
 	})
 
 	resp = scheduler.Do(context.Background())
-	assert.Equal(t, resp.(string), "1-2")
+	assert.EqualValues(t, resp, "1-2")
 	//
 	scheduler = New()
 	scheduler.AddRunner(1, &TestPriorityRunner{
@@ -75,7 +75,7 @@ func TestPS(t *testing.T) {
 	})
 
 	resp = scheduler.Do(context.Background())
-	assert.Equal(t, resp.(string), "1-2")
+	assert.EqualValues(t, resp, "1-2")
 
 	//
 	scheduler.AddRunner(0, &TestPriorityRunner{
@@ -88,5 +88,5 @@ func TestPS(t *testing.T) {
 	})
 
 	resp = scheduler.Do(context.Background())
-	assert.Equal(t, resp.(string), "0-2")
+	assert.EqualValues(t, resp, "0-2")
 }

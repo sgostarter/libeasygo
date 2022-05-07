@@ -52,6 +52,7 @@ func (impl *redisDataProviderImpl) scanImpl(k string, cb inters.DataScannerCB, r
 
 	for {
 		keys, cursor, err = impl.redisCli.HScan(context.Background(), k, cursor, "", 100).Result()
+		// nolint: nestif
 		if err != nil {
 			err = cb(k, "", 0, err)
 		} else {

@@ -46,6 +46,7 @@ func TestDecodeBuffer(t *testing.T) {
 	assert.Equal(t, string(d), "yyzz")
 }
 
+// nolint
 func TestDecodeBuffer2(t *testing.T) {
 	buf := NewBuffer(nil)
 

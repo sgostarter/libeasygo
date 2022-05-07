@@ -39,6 +39,7 @@ func EncodeIDEx(id int64, minLen int, seed string) string {
 	l := hex.EncodeToString([]byte{byte(len(s))})
 
 	e := ""
+
 	if len(l)+len(s) < minLen {
 		for idx := 0; idx < minLen-len(l)-len(s); idx++ {
 			e += seed[(int(id)+idx)%len(seed) : (int(id)+idx)%len(seed)+1]
