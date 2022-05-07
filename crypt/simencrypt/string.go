@@ -2,6 +2,7 @@ package simencrypt
 
 import (
 	"encoding/hex"
+
 	"github.com/sgostarter/libeasygo/commerr"
 )
 
