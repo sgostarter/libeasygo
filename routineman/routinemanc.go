@@ -67,7 +67,7 @@ func (impl *routineManWithTimeoutCheckImpl) routineName(name string) string {
 	return fmt.Sprintf("%s-%d", name, snowflake.ID())
 }
 
-func (impl *routineManWithTimeoutCheckImpl) StartRoutine(routine func(ctx context.Context), name string) {
+func (impl *routineManWithTimeoutCheckImpl) StartRoutine(routine func(ctx context.Context, exiting func() bool), name string) {
 	impl.wg.Add(1)
 
 	name = impl.routineName(name)
@@ -79,7 +79,9 @@ func (impl *routineManWithTimeoutCheckImpl) StartRoutine(routine func(ctx contex
 			impl.routines.Delete(name)
 		}()
 
-		routine(impl.ctx)
+		routine(impl.ctx, func() bool {
+			return impl.exiting.Load()
+		})
 	}()
 }
 

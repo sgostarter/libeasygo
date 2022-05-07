@@ -39,13 +39,15 @@ func (impl *routineManImpl) Exiting() bool {
 	return impl.exiting.Load()
 }
 
-func (impl *routineManImpl) StartRoutine(routine func(ctx context.Context), _ string) {
+func (impl *routineManImpl) StartRoutine(routine func(ctx context.Context, exiting func() bool), _ string) {
 	impl.wg.Add(1)
 
 	go func() {
 		defer impl.wg.Done()
 
-		routine(impl.ctx)
+		routine(impl.ctx, func() bool {
+			return impl.exiting.Load()
+		})
 	}()
 }
 
