@@ -110,6 +110,7 @@ func (impl *routineManWithTimeoutCheckImpl) dump() string {
 	return ss.String()
 }
 
-func (impl *routineManWithTimeoutCheckImpl) SetStopFlag() {
+func (impl *routineManWithTimeoutCheckImpl) TriggerStop() {
 	impl.exiting.Store(true)
+	impl.ctxCancel()
 }

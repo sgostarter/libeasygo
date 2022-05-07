@@ -60,6 +60,7 @@ func (impl *routineManImpl) StopAndWait() {
 	impl.wg.Wait()
 }
 
-func (impl *routineManImpl) SetStopFlag() {
+func (impl *routineManImpl) TriggerStop() {
 	impl.exiting.Store(true)
+	impl.ctxCancel()
 }
