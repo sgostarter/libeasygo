@@ -109,3 +109,7 @@ func (impl *routineManWithTimeoutCheckImpl) dump() string {
 
 	return ss.String()
 }
+
+func (impl *routineManWithTimeoutCheckImpl) SetStopFlag() {
+	impl.exiting.Store(true)
+}

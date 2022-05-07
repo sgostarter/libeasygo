@@ -8,4 +8,5 @@ type RoutineMan interface {
 	StartRoutine(routine func(ctx context.Context), name string)
 	Wait()
 	StopAndWait()
+	SetStopFlag()
 }
