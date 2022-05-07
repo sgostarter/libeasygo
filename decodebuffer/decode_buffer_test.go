@@ -45,3 +45,21 @@ func TestDecodeBuffer(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, string(d), "yyzz")
 }
+
+func TestDecodeBuffer2(t *testing.T) {
+	buf := NewBuffer(nil)
+
+	rule := NewRuleTerminator([]byte("1"))
+	buf.SetDecodeRule(rule)
+
+	buf.Append([]byte("a1b1c2def3def3"))
+	d, ok := buf.FindTerminator()
+	assert.True(t, ok)
+	assert.EqualValues(t, "a", string(d))
+
+	d = append(d, []byte("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx")...)
+	e, ok := buf.FindTerminator()
+	assert.True(t, ok)
+	assert.EqualValues(t, "b", string(e))
+
+}
