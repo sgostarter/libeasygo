@@ -32,12 +32,12 @@ func NewRoutineManWithTimeoutCheck(ctx context.Context, name string, timeout tim
 		logger:    logger,
 	}
 
-	impl.ob.Store(opWrapper{})
+	impl.ob.Store(obWrapper{})
 
 	return impl
 }
 
-type opWrapper struct {
+type obWrapper struct {
 	ob DebugRoutineManTimeoutObserver
 }
 
@@ -99,7 +99,7 @@ func (impl *routineManWithTimeoutCheckImpl) StopAndWait() {
 			msg := impl.dump()
 			impl.logger.Warn(msg)
 
-			if obW, ok := impl.ob.Load().(opWrapper); ok && obW.ob != nil {
+			if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
 				obW.ob(msg)
 			}
 		case <-ch:
@@ -131,5 +131,5 @@ func (impl *routineManWithTimeoutCheckImpl) TriggerStop() {
 }
 
 func (impl *routineManWithTimeoutCheckImpl) SetExitTimeoutObserver(ob DebugRoutineManTimeoutObserver) {
-	impl.ob.Store(ob)
+	impl.ob.Store(obWrapper{ob: ob})
 }
