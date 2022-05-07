@@ -13,7 +13,7 @@ import (
 	"go.uber.org/atomic"
 )
 
-func NewRoutineManWithTimeoutCheck(ctx context.Context, name string, timeout time.Duration, logger l.Wrapper) RoutineMan {
+func NewRoutineManWithTimeoutCheck(ctx context.Context, name string, timeout time.Duration, logger l.Wrapper) DebugRoutineMan {
 	if timeout <= 0 {
 		timeout = time.Second
 	}
@@ -24,13 +24,21 @@ func NewRoutineManWithTimeoutCheck(ctx context.Context, name string, timeout tim
 
 	ctx, cancel := context.WithCancel(ctx)
 
-	return &routineManWithTimeoutCheckImpl{
+	impl := &routineManWithTimeoutCheckImpl{
 		ctx:       ctx,
 		ctxCancel: cancel,
 		name:      name,
 		timeout:   timeout,
 		logger:    logger,
 	}
+
+	impl.ob.Store(opWrapper{})
+
+	return impl
+}
+
+type opWrapper struct {
+	ob DebugRoutineManTimeoutObserver
 }
 
 type routineManWithTimeoutCheckImpl struct {
@@ -43,6 +51,8 @@ type routineManWithTimeoutCheckImpl struct {
 
 	exiting  atomic.Bool
 	routines sync.Map
+
+	ob atomic.Value
 }
 
 func (impl *routineManWithTimeoutCheckImpl) Context() context.Context {
@@ -86,7 +96,12 @@ func (impl *routineManWithTimeoutCheckImpl) StopAndWait() {
 	go func() {
 		select {
 		case <-time.After(impl.timeout):
-			impl.logger.Warn(impl.dump())
+			msg := impl.dump()
+			impl.logger.Warn(msg)
+
+			if obW, ok := impl.ob.Load().(opWrapper); ok && obW.ob != nil {
+				obW.ob(msg)
+			}
 		case <-ch:
 		}
 	}()
@@ -113,4 +128,8 @@ func (impl *routineManWithTimeoutCheckImpl) dump() string {
 func (impl *routineManWithTimeoutCheckImpl) TriggerStop() {
 	impl.exiting.Store(true)
 	impl.ctxCancel()
+}
+
+func (impl *routineManWithTimeoutCheckImpl) SetExitTimeoutObserver(ob DebugRoutineManTimeoutObserver) {
+	impl.ob.Store(ob)
 }

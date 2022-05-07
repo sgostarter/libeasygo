@@ -12,3 +12,11 @@ type RoutineMan interface {
 	StopAndWait()
 	Wait()
 }
+
+type DebugRoutineManTimeoutObserver func(msg string)
+
+type DebugRoutineMan interface {
+	RoutineMan
+
+	SetExitTimeoutObserver(ob DebugRoutineManTimeoutObserver)
+}
