@@ -116,7 +116,7 @@ func (impl *routineManWithTimeoutCheckImpl) StopAndWait() {
 func (impl *routineManWithTimeoutCheckImpl) dumpRoutineMsg() string {
 	ss := strings.Builder{}
 	ss.WriteString("!!ROUTINE TERMINATE TIMEOUT CHECKED\n")
-	ss.WriteString(fmt.Sprintf("function %s\n", impl.name))
+	ss.WriteString(fmt.Sprintf("routine %s\n", impl.name))
 	impl.routines.Range(func(key, value interface{}) bool {
 		ss.WriteString(fmt.Sprintf(" %s: %s\n", cast.ToString(key), cast.ToTime(value).String()))
 
@@ -163,6 +163,7 @@ func (impl *routineManWithTimeoutCheckImpl) DoWithTimeout(label string, do func(
 			var ss strings.Builder
 
 			ss.WriteString("!!DO WITH TIMEOUT CHECKED\n")
+			ss.WriteString(fmt.Sprintf("routine %s\n", impl.name))
 			ss.WriteString(fmt.Sprintf("operation label %s\n", label))
 			obW.ob(ss.String())
 		}
