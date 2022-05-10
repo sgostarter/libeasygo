@@ -15,7 +15,6 @@ func PathExists(path string) (exists bool, err error) {
 	}
 
 	return
-
 }
 
 func IsDir(path string) bool {

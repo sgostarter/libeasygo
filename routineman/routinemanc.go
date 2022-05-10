@@ -161,6 +161,7 @@ func (impl *routineManWithTimeoutCheckImpl) DoWithTimeout(label string, do func(
 	case <-time.After(d):
 		if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
 			var ss strings.Builder
+
 			ss.WriteString("!!DO WITH TIMEOUT CHECKED\n")
 			ss.WriteString(fmt.Sprintf("operation label %s\n", label))
 			obW.ob(ss.String())
