@@ -98,7 +98,7 @@ func (impl *routineManWithTimeoutCheckImpl) StopAndWait() {
 	go func() {
 		select {
 		case <-time.After(impl.timeout):
-			msg := impl.dump()
+			msg := impl.dumpRoutineMsg()
 			impl.logger.Warn(msg)
 
 			if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
@@ -113,7 +113,7 @@ func (impl *routineManWithTimeoutCheckImpl) StopAndWait() {
 	ch <- true
 }
 
-func (impl *routineManWithTimeoutCheckImpl) dump() string {
+func (impl *routineManWithTimeoutCheckImpl) dumpRoutineMsg() string {
 	ss := strings.Builder{}
 	ss.WriteString("!!ROUTINE TERMINATE TIMEOUT CHECKED\n")
 	ss.WriteString(fmt.Sprintf("function %s\n", impl.name))
@@ -134,4 +134,36 @@ func (impl *routineManWithTimeoutCheckImpl) TriggerStop() {
 
 func (impl *routineManWithTimeoutCheckImpl) SetExitTimeoutObserver(ob DebugRoutineManTimeoutObserver) {
 	impl.ob.Store(obWrapper{ob: ob})
+}
+
+func (impl *routineManWithTimeoutCheckImpl) DoWithTimeout(label string, do func(), d time.Duration) {
+	if do == nil {
+		return
+	}
+
+	if d <= 0 {
+		do()
+
+		return
+	}
+
+	ch := make(chan interface{}, 2)
+
+	go func() {
+		do()
+
+		ch <- 1
+	}()
+
+	select {
+	case <-ch:
+		return
+	case <-time.After(d):
+		if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
+			var ss strings.Builder
+			ss.WriteString("!!DO WITH TIMEOUT CHECKED\n")
+			ss.WriteString(fmt.Sprintf("operation label %s\n", label))
+			obW.ob(ss.String())
+		}
+	}
 }

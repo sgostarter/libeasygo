@@ -3,6 +3,7 @@ package routineman
 import (
 	"context"
 	"sync"
+	"time"
 
 	"github.com/sgostarter/i/l"
 	"go.uber.org/atomic"
@@ -65,4 +66,12 @@ func (impl *routineManImpl) StopAndWait() {
 func (impl *routineManImpl) TriggerStop() {
 	impl.exiting.Store(true)
 	impl.ctxCancel()
+}
+
+func (impl *routineManImpl) DoWithTimeout(_ string, do func(), _ time.Duration) {
+	if do != nil {
+		do()
+
+		return
+	}
 }

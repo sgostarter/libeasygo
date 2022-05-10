@@ -1,6 +1,9 @@
 package routineman
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type RoutineMan interface {
 	Context() context.Context
@@ -11,6 +14,8 @@ type RoutineMan interface {
 	TriggerStop()
 	StopAndWait()
 	Wait()
+
+	DoWithTimeout(label string, do func(), d time.Duration)
 }
 
 type DebugRoutineManTimeoutObserver func(msg string)
