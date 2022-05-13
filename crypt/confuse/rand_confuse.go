@@ -4,6 +4,10 @@ import (
 	"math/rand"
 )
 
+func NewRandConfuse() Confuse {
+	return NewRandConfuseEx(NewDefN(), NewDefN())
+}
+
 func NewRandConfuseEx(rN, wN N) Confuse {
 	return &randConfuseImpl{
 		rN: rN,
