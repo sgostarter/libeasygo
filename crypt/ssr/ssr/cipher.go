@@ -16,6 +16,7 @@ import (
 type Cipher interface {
 	StreamConnCipher
 	PacketConnCipher
+	ReaderWriterCipher
 }
 
 type ReaderWriterCipher interface {
