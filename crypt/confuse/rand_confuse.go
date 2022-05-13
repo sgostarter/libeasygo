@@ -52,10 +52,6 @@ func (impl randConfuseImpl) Open(d []byte) ([]byte, error) {
 		n := impl.rN.NextN()
 		idx = idx + n
 
-		if idx >= len(d) {
-			break
-		}
-
 		cd = append(cd, d[idx])
 		idx++
 	}
