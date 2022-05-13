@@ -3,15 +3,20 @@ module github.com/sgostarter/libeasygo
 go 1.17
 
 require (
-	github.com/go-redis/redis/v8 v8.11.4
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/godruoyi/go-snowflake v0.0.1
-	github.com/sgostarter/i v0.1.3
-	github.com/sgostarter/libconfig v0.0.0-20211221083720-b4e6c5547d3f
+	github.com/sgostarter/i v0.1.4
+	github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61
 	github.com/spf13/cast v1.4.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	go.uber.org/atomic v1.9.0
 	gorm.io/driver/mysql v1.2.1
 	gorm.io/gorm v1.22.4
+)
+
+require (
+	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
+	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
 )
 
 require (
@@ -22,6 +27,10 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.3 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	golang.org/x/sys v0.0.0-20220328115105-d36c6a25d886 // indirect
+	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
