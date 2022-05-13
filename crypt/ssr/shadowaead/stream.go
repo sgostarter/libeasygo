@@ -69,7 +69,7 @@ func (w *writer) ReadFrom(r io.Reader) (n int64, err error) {
 		}
 
 		if er != nil {
-			if errors.Is(er, io.EOF) {
+			if !errors.Is(er, io.EOF) {
 				err = er
 			}
 
@@ -188,7 +188,7 @@ func (r *reader) WriteTo(w io.Writer) (n int64, err error) {
 		}
 
 		if er != nil {
-			if errors.Is(er, io.EOF) {
+			if !errors.Is(er, io.EOF) {
 				err = er
 			}
 
