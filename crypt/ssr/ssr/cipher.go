@@ -3,6 +3,7 @@ package ssr
 import (
 	// nolint: gosec
 	"crypto/md5"
+	"io"
 
 	"errors"
 	"net"
@@ -15,6 +16,10 @@ import (
 type Cipher interface {
 	StreamConnCipher
 	PacketConnCipher
+}
+
+type ReaderWriterCipher interface {
+	ReaderWriterConn(writer io.ReadWriter) io.ReadWriter
 }
 
 type StreamConnCipher interface {
@@ -91,6 +96,10 @@ func PickCipher(name string, key []byte, password string) (Cipher, error) {
 
 type aeadCipher struct{ shadowaead.Cipher }
 
+func (aead *aeadCipher) ReaderWriterConn(rw io.ReadWriter) io.ReadWriter {
+	return shadowaead.NewRW(rw, aead)
+}
+
 func (aead *aeadCipher) StreamConn(c net.Conn) net.Conn {
 	return shadowaead.NewConn(c, aead)
 }
@@ -102,8 +111,9 @@ func (aead *aeadCipher) PacketConn(c net.PacketConn) net.PacketConn {
 // dummy cipher does not encrypt
 type dummy struct{}
 
-func (dummy) StreamConn(c net.Conn) net.Conn             { return c }
-func (dummy) PacketConn(c net.PacketConn) net.PacketConn { return c }
+func (dummy) ReaderWriterConn(rw io.ReadWriter) io.ReadWriter { return rw }
+func (dummy) StreamConn(c net.Conn) net.Conn                  { return c }
+func (dummy) PacketConn(c net.PacketConn) net.PacketConn      { return c }
 
 // key-derivation function from original Shadowsocks
 func kdf(password string, keyLen int) []byte {

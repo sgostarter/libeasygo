@@ -218,6 +218,7 @@ type streamRW struct {
 
 func (c *streamRW) initReader() error {
 	salt := make([]byte, c.SaltSize())
+
 	if _, err := io.ReadFull(c.rw, salt); err != nil {
 		return err
 	}
