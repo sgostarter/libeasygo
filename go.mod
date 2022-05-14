@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/golang/snappy v0.0.4
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
 )
