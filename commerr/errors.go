@@ -19,4 +19,5 @@ var (
 	ErrReject            = errors.New("reject")
 	ErrCrash             = errors.New("crash")
 	ErrOverflow          = errors.New("overflow")
+	ErrUnknownBadFormat  = errors.New("unknownFlrmat")
 )
