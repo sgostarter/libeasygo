@@ -5,13 +5,13 @@ import (
 	"strings"
 )
 
-func ValidateRemoteAddress(s string) (host string, port int, ok bool) {
+func ValidateListenAddress(s string) (ip string, port int, ok bool) {
 	ps := strings.Split(s, ":")
 	if len(ps) != 2 {
 		return
 	}
 
-	if ps[0] == "" || ps[1] == "" {
+	if ps[1] == "" {
 		return
 	}
 
@@ -24,7 +24,7 @@ func ValidateRemoteAddress(s string) (host string, port int, ok bool) {
 		return
 	}
 
-	host = strings.TrimLeft(ps[0], "\r\n\t ")
+	ip = strings.TrimLeft(ps[0], "\r\n\t ")
 	ok = true
 
 	return

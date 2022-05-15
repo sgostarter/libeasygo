@@ -28,11 +28,13 @@ func PoolAddressShouldTLS(s string) int {
 	return ShouldUseUnknown
 }
 
-func PoolAddressValidate(s string) (hostAndPort string, shouldUse int, err error) {
+func ValidatePoolRemoteAddress(s string) (hostAndPort string, shouldUse int, err error) {
 	s = strings.TrimLeft(s, "\r\n\t ")
 
-	hostAndPort, shouldUse = poolAddressValidate(s)
-	if !ValidateHostAndPort(hostAndPort) {
+	hostAndPort, shouldUse = validatePoolAddress(s)
+
+	_, _, ok := ValidateRemoteAddress(hostAndPort)
+	if !ok {
 		err = commerr.ErrUnknownBadFormat
 
 		return
@@ -41,7 +43,7 @@ func PoolAddressValidate(s string) (hostAndPort string, shouldUse int, err error
 	return
 }
 
-func poolAddressValidate(s string) (string, int) {
+func validatePoolAddress(s string) (string, int) {
 	ps := strings.SplitN(s, recognizeS, 2)
 	if len(ps) != 2 {
 		return s, PoolAddressShouldTLS(s)
