@@ -17,6 +17,7 @@ require (
 require (
 	github.com/golang/snappy v0.0.4
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
+	github.com/tdewolff/minify/v2 v2.11.2
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
 )
 
@@ -30,6 +31,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/tdewolff/parse/v2 v2.5.29 // indirect
 	golang.org/x/sys v0.0.0-20220328115105-d36c6a25d886 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
