@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/godruoyi/go-snowflake v0.0.1
-	github.com/sgostarter/i v0.1.5
+	github.com/sgostarter/i v0.1.6
 	github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61
 	github.com/spf13/cast v1.4.1
 	github.com/stretchr/testify v1.7.1
