@@ -73,8 +73,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 h1:f/FNXud6gA3MNr8meMVVGxhp+QBTqY91tM8HjEuMjGg=
 github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3/go.mod h1:HgjTstvQsPGkxUsCd2KWxErBblirPizecHcpD3ffK+s=
-github.com/sgostarter/i v0.1.5 h1:iqy8fd6cY2D+wHefPZ4RzN78i4MLAsBuu9mEIR4Lymg=
-github.com/sgostarter/i v0.1.5/go.mod h1:buUUS9rtMjKmQhYNKxiM+brhFX7jLzZKv6AuZlHCgGk=
+github.com/sgostarter/i v0.1.7 h1:8OvZYUvqtaPN5ygpIp9fp/GFzgMaN87Ck4ufdUnwHHw=
+github.com/sgostarter/i v0.1.7/go.mod h1:buUUS9rtMjKmQhYNKxiM+brhFX7jLzZKv6AuZlHCgGk=
 github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61 h1:X9DVGF3F0yXFhq+1bKdOFotZwCZg5ydBv98YL3bPhKw=
 github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61/go.mod h1:5KLny8g++hHgCBbsMYRpxSUsJIi77h/3/CftIiWJox8=
 github.com/spf13/cast v1.4.1 h1:s0hze+J0196ZfEMTs80N7UlFt0BDuQ7Q+JDnHiMWKdA=
