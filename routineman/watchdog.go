@@ -1,8 +1,16 @@
 package routineman
 
+import (
+	"context"
+	"time"
+)
+
 type WatchDog interface {
 	StopAsync(rm RoutineMan)
 	StopAndWait(rm RoutineMan)
+
+	Run(label string, runner func())
+	RunWthCustomTimeout(label string, runner func(), to time.Duration)
 }
 
 func NewWatchDog() WatchDog {
@@ -10,6 +18,7 @@ func NewWatchDog() WatchDog {
 }
 
 var _defPool = NewWatchDog()
+var _defRoutineMan = NewRoutineManWithTimeoutCheck(context.Background(), "__def", time.Second*30, nil)
 
 func GetDefaultWatchDog() WatchDog {
 	return _defPool
@@ -34,4 +43,12 @@ func (impl *watchDogImpl) StopAndWait(rm RoutineMan) {
 	}
 
 	rm.StopAndWait()
+}
+
+func (impl *watchDogImpl) Run(label string, runner func()) {
+	_defRoutineMan.Run(label, runner)
+}
+
+func (impl *watchDogImpl) RunWthCustomTimeout(label string, runner func(), to time.Duration) {
+	_defRoutineMan.RunWthCustomTimeout(label, runner, to)
 }

@@ -136,21 +136,23 @@ func (impl *routineManWithTimeoutCheckImpl) SetExitTimeoutObserver(ob DebugRouti
 	impl.ob.Store(obWrapper{ob: ob})
 }
 
-func (impl *routineManWithTimeoutCheckImpl) DoWithTimeout(label string, do func(), d time.Duration) {
-	if do == nil {
+func (impl *routineManWithTimeoutCheckImpl) Run(label string, runner func()) {
+	impl.RunWthCustomTimeout(label, runner, impl.timeout)
+}
+
+func (impl *routineManWithTimeoutCheckImpl) RunWthCustomTimeout(label string, runner func(), to time.Duration) {
+	if runner == nil {
 		return
 	}
 
-	if d <= 0 {
-		do()
-
-		return
+	if to <= 0 {
+		to = time.Second
 	}
 
 	ch := make(chan interface{}, 2)
 
 	go func() {
-		do()
+		runner()
 
 		ch <- 1
 	}()
@@ -158,7 +160,7 @@ func (impl *routineManWithTimeoutCheckImpl) DoWithTimeout(label string, do func(
 	select {
 	case <-ch:
 		return
-	case <-time.After(d):
+	case <-time.After(to):
 		if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
 			var ss strings.Builder
 

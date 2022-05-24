@@ -68,10 +68,14 @@ func (impl *routineManImpl) TriggerStop() {
 	impl.ctxCancel()
 }
 
-func (impl *routineManImpl) DoWithTimeout(_ string, do func(), _ time.Duration) {
-	if do != nil {
-		do()
+func (impl *routineManImpl) Run(_ string, runner func()) {
+	if runner != nil {
+		runner()
+	}
+}
 
-		return
+func (impl *routineManImpl) RunWthCustomTimeout(_ string, runner func(), _ time.Duration) {
+	if runner != nil {
+		runner()
 	}
 }

@@ -15,7 +15,8 @@ type RoutineMan interface {
 	StopAndWait()
 	Wait()
 
-	DoWithTimeout(label string, do func(), d time.Duration)
+	Run(label string, runner func())
+	RunWthCustomTimeout(label string, runner func(), to time.Duration)
 }
 
 type DebugRoutineManTimeoutObserver func(msg string)
