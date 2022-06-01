@@ -3,9 +3,63 @@ package grpctoolset
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"io/ioutil"
 
 	"github.com/sgostarter/libeasygo/commerr"
 )
+
+type GRPCTlsConfig struct {
+	RootCAs    [][]byte `yaml:"RootCAs" json:"root_cas" `
+	Cert       []byte   `yaml:"Cert" json:"cert"`
+	Key        []byte   `yaml:"Key" json:"key"`
+	ServerName string   `yaml:"ServerName" json:"server_name"`
+}
+
+type GRPCTlsFileConfig struct {
+	RootCAs    []string `yaml:"RootCAs" json:"root_cas" `
+	Cert       string   `yaml:"Cert" json:"cert"`
+	Key        string   `yaml:"Key" json:"key"`
+	ServerName string   `yaml:"ServerName" json:"server_name"`
+}
+
+func GRPCTlsConfigMap(fileCfg *GRPCTlsFileConfig) (*GRPCTlsConfig, error) {
+	if fileCfg == nil {
+		return nil, nil
+	}
+
+	if len(fileCfg.RootCAs) == 0 || fileCfg.Cert == "" || fileCfg.Key == "" {
+		return nil, commerr.ErrInvalidArgument
+	}
+
+	cfg := &GRPCTlsConfig{
+		ServerName: fileCfg.ServerName,
+	}
+
+	for _, ca := range fileCfg.RootCAs {
+		d, err := ioutil.ReadFile(ca)
+		if err != nil {
+			return nil, err
+		}
+
+		cfg.RootCAs = append(cfg.RootCAs, d)
+	}
+
+	d, err := ioutil.ReadFile(fileCfg.Cert)
+	if err != nil {
+		return nil, err
+	}
+
+	cfg.Cert = d
+
+	d, err = ioutil.ReadFile(fileCfg.Key)
+	if err != nil {
+		return nil, err
+	}
+
+	cfg.Key = d
+
+	return cfg, nil
+}
 
 func GenServerTLSConfig(cfg *GRPCTlsConfig) (tlsConfig *tls.Config, err error) {
 	if cfg == nil {

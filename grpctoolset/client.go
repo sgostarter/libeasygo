@@ -7,7 +7,7 @@ import (
 )
 
 type GRPCClientConfig struct {
-	Target    string         `yaml:"target" json:"target"`
+	Target    string         `yaml:"Target" json:"target"`
 	TLSConfig *GRPCTlsConfig `yaml:"TLSConfig" json:"tls_config"`
 }
 

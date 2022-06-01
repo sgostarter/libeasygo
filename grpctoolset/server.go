@@ -12,15 +12,8 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-type GRPCTlsConfig struct {
-	RootCAs    [][]byte `yaml:"rootCAs" json:"root_cas" `
-	Cert       []byte   `yaml:"cert" json:"cert"`
-	Key        []byte   `yaml:"key" json:"key"`
-	ServerName string   `yaml:"serverName" json:"server_name"`
-}
-
 type GRPCServerConfig struct {
-	Address   string         `yaml:"address" json:"address"`
+	Address   string         `yaml:"Address" json:"address"`
 	TLSConfig *GRPCTlsConfig `yaml:"TLSConfig" json:"tls_config"`
 }
 
