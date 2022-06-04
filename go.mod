@@ -16,6 +16,7 @@ require (
 
 require (
 	github.com/golang/snappy v0.0.4
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
 	github.com/tdewolff/minify/v2 v2.11.2
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064

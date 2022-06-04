@@ -5,6 +5,8 @@ import (
 	"net"
 	"sync"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/sgostarter/i/l"
 	"github.com/sgostarter/libeasygo/commerr"
 	"github.com/sgostarter/libeasygo/routineman"
@@ -81,7 +83,7 @@ func (impl *gRPCServerImpl) Start(init func(s *grpc.Server)) (err error) {
 		return
 	}
 
-	impl.s = grpc.NewServer(impl.serverOptions...)
+	impl.s = grpc.NewServer(impl.getServerOptions()...)
 	init(impl.s)
 
 	impl.routineMan.StartRoutine(impl.mainRoutine, "mainRoutine")
@@ -107,4 +109,16 @@ func (impl *gRPCServerImpl) Stop() {
 func (impl *gRPCServerImpl) StopAndWait() {
 	impl.s.GracefulStop()
 	impl.routineMan.StopAndWait()
+}
+
+func (impl *gRPCServerImpl) getServerOptions() (options []grpc.ServerOption) {
+	options = append(options, impl.serverOptions...)
+	options = append(options, grpc_middleware.WithStreamServerChain(
+		grpc_recovery.StreamServerInterceptor(),
+	))
+	options = append(options, grpc_middleware.WithUnaryServerChain(
+		grpc_recovery.UnaryServerInterceptor(),
+	))
+
+	return
 }
