@@ -21,4 +21,5 @@ var (
 	ErrOverflow          = errors.New("overflow")
 	ErrUnknownBadFormat  = errors.New("unknownFlrmat")
 	ErrTimeout           = errors.New("timeout")
+	ErrExiting           = errors.New("exiting")
 )
