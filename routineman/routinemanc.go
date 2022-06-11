@@ -149,25 +149,34 @@ func (impl *routineManWithTimeoutCheckImpl) RunWthCustomTimeout(label string, ru
 		to = time.Second
 	}
 
-	ch := make(chan interface{}, 2)
+	ch := make(chan interface{}, 1)
 
 	go func() {
-		runner()
+		id := snowflake.ID()
 
-		ch <- 1
+		select {
+		case <-ch:
+			return
+		case <-time.After(to):
+			if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
+				var ss strings.Builder
+
+				ss.WriteString("!!DO WITH TIMEOUT CHECKED\n")
+				ss.WriteString(fmt.Sprintf("++ID:%d", id))
+				ss.WriteString(fmt.Sprintf("routine %s\n", impl.name))
+				ss.WriteString(fmt.Sprintf("operation label %s\n", label))
+				obW.ob(ss.String())
+			}
+		}
+
+		<-ch
+
+		if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
+			obW.ob(fmt.Sprintf("++ID: %d Returned\n", id))
+		}
 	}()
 
-	select {
-	case <-ch:
-		return
-	case <-time.After(to):
-		if obW, ok := impl.ob.Load().(obWrapper); ok && obW.ob != nil {
-			var ss strings.Builder
+	runner()
 
-			ss.WriteString("!!DO WITH TIMEOUT CHECKED\n")
-			ss.WriteString(fmt.Sprintf("routine %s\n", impl.name))
-			ss.WriteString(fmt.Sprintf("operation label %s\n", label))
-			obW.ob(ss.String())
-		}
-	}
+	ch <- 1
 }
