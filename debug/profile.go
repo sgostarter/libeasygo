@@ -10,6 +10,10 @@ import (
 )
 
 func StartProfileServer(logger l.Wrapper) {
+	go RunProfileServer(logger)
+}
+
+func RunProfileServer(logger l.Wrapper) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
@@ -24,11 +28,10 @@ func StartProfileServer(logger l.Wrapper) {
 			Handler: mux,
 		}
 
-		err := server.ListenAndServe()
-		if err != nil {
+		logger.WithFields(l.StringField("address", addr)).Info("pprof server listen")
+
+		if err := server.ListenAndServe(); err != nil {
 			logger.WithFields(l.ErrorField(err)).Error("pprof server")
-		} else {
-			logger.WithFields(l.StringField("listen", addr)).Info("pprof start")
 		}
 	}
 
