@@ -10,6 +10,10 @@ import (
 )
 
 func StartProfileServer(logger l.Wrapper) {
+	go RunProfileServer(logger)
+}
+
+func RunProfileServer(logger l.Wrapper) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
