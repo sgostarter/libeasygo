@@ -105,11 +105,14 @@ func (impl *gRPCServerImpl) Wait() {
 }
 
 func (impl *gRPCServerImpl) Stop() {
-	impl.s.GracefulStop()
+	// impl.s.GracefulStop()
+	impl.s.Stop()
 }
 
 func (impl *gRPCServerImpl) StopAndWait() {
-	impl.s.GracefulStop()
+	impl.routineMan.TriggerStop()
+	// impl.s.GracefulStop()
+	impl.s.Stop()
 	impl.routineMan.StopAndWait()
 }
 

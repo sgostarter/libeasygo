@@ -27,7 +27,7 @@ func GRPCTlsConfigMap(fileCfg *GRPCTlsFileConfig) (*GRPCTlsConfig, error) {
 		return nil, nil
 	}
 
-	if len(fileCfg.RootCAs) == 0 || fileCfg.Cert == "" || fileCfg.Key == "" {
+	if fileCfg.Cert == "" || fileCfg.Key == "" {
 		return nil, commerr.ErrInvalidArgument
 	}
 
@@ -96,10 +96,14 @@ func GenClientTLSConfig(cfg *GRPCTlsConfig) (tlsConfig *tls.Config, err error) {
 		return
 	}
 
-	caPool := x509.NewCertPool()
+	var caPool *x509.CertPool
 
-	for _, ca := range cfg.RootCAs {
-		caPool.AppendCertsFromPEM(ca)
+	if len(cfg.RootCAs) > 0 {
+		caPool = x509.NewCertPool()
+
+		for _, ca := range cfg.RootCAs {
+			caPool.AppendCertsFromPEM(ca)
+		}
 	}
 
 	cert, err := tls.X509KeyPair(cfg.Cert, cfg.Key)
