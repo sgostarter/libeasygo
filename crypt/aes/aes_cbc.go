@@ -4,9 +4,17 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"fmt"
+
+	"github.com/sgostarter/libeasygo/commerr"
 )
 
-func CBCEncrypt(origData, key []byte) ([]byte, error) {
+func CBCEncrypt(origData, key []byte) (crypted []byte, err error) {
+	defer func() {
+		if errR := recover(); errR != nil {
+			err = commerr.ErrCrash
+		}
+	}()
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, fmt.Errorf("new cipher failed: %w", err)
@@ -15,13 +23,19 @@ func CBCEncrypt(origData, key []byte) ([]byte, error) {
 	blockSize := block.BlockSize()
 	origData = PKCS7Padding(origData, blockSize)
 	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
-	crypted := make([]byte, len(origData))
+	crypted = make([]byte, len(origData))
 	blockMode.CryptBlocks(crypted, origData)
 
-	return crypted, nil
+	return
 }
 
-func CBCDecrypt(encryptedData, key []byte) ([]byte, error) {
+func CBCDecrypt(encryptedData, key []byte) (decryptedData []byte, err error) {
+	defer func() {
+		if errR := recover(); errR != nil {
+			err = commerr.ErrCrash
+		}
+	}()
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, fmt.Errorf("new cipher failed: %w", err)
@@ -32,5 +46,7 @@ func CBCDecrypt(encryptedData, key []byte) ([]byte, error) {
 	origData := make([]byte, len(encryptedData))
 	blockMode.CryptBlocks(origData, encryptedData)
 
-	return PKCS5UnPadding(origData)
+	decryptedData, err = PKCS5UnPadding(origData)
+
+	return
 }
