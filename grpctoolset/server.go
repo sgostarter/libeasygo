@@ -3,6 +3,7 @@ package grpctoolset
 import (
 	"context"
 	"net"
+	"net/http"
 	"sync"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -15,8 +16,9 @@ import (
 )
 
 type GRPCServerConfig struct {
-	Address   string         `yaml:"Address" json:"address"`
-	TLSConfig *GRPCTlsConfig `yaml:"TLSConfig" json:"tls_config"`
+	Address    string         `yaml:"Address" json:"address"`
+	TLSConfig  *GRPCTlsConfig `yaml:"TLSConfig" json:"tls_config"`
+	WebAddress string         `yaml:"WebAddress" json:"web_address"`
 }
 
 type GRPCServer interface {
@@ -49,6 +51,7 @@ func NewGRPCServer(routineMan routineman.RoutineMan, cfg *GRPCServerConfig, logg
 	return &gRPCServerImpl{
 		routineMan:        routineMan,
 		address:           cfg.Address,
+		webAddress:        cfg.WebAddress,
 		extraInterceptors: extraInterceptors,
 		logger:            logger.WithFields(l.StringField(l.ClsKey, "gRPCServerImpl")),
 		serverOptions:     serverOptions,
@@ -60,6 +63,7 @@ type gRPCServerImpl struct {
 
 	routineMan        routineman.RoutineMan
 	address           string
+	webAddress        string
 	extraInterceptors []interface{}
 	logger            l.Wrapper
 	serverOptions     []grpc.ServerOption
@@ -90,7 +94,36 @@ func (impl *gRPCServerImpl) Start(init func(s *grpc.Server)) (err error) {
 
 	impl.routineMan.StartRoutine(impl.mainRoutine, "mainRoutine")
 
+	if impl.webAddress != "" {
+		impl.routineMan.StartRoutine(impl.webRoutine, "webRoutine")
+	}
+
 	return
+}
+
+func (impl *gRPCServerImpl) webRoutine(ctx context.Context, exiting func() bool) {
+	gRPCWebListen, err := net.Listen("tcp", impl.webAddress)
+	if err != nil {
+		impl.logger.WithFields(l.ErrorField(err)).Fatal("listen4Web")
+	}
+
+	h, err := NewGRPCWebHandler(GRPCWebHandlerInputParameters{
+		GRPCServer:          impl.s,
+		GRPCWebUseWebsocket: false,
+		GRPCWebPingInterval: 0,
+	})
+	if err != nil {
+		impl.logger.WithFields(l.ErrorField(err)).Fatal("NewGRPCWebHandler")
+	}
+
+	impl.logger.Info("grpc web server listen on:", gRPCWebListen.Addr())
+
+	httpServer := &http.Server{Handler: h}
+	err = httpServer.Serve(gRPCWebListen)
+
+	if err != nil {
+		impl.logger.WithFields(l.ErrorField(err)).Fatal("webServe")
+	}
 }
 
 func (impl *gRPCServerImpl) mainRoutine(ctx context.Context, exiting func() bool) {
