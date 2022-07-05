@@ -350,8 +350,8 @@ github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQD
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
 github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da/go.mod h1:gi+0XIa01GRL2eRQVjQkKGqKF3SF9vZR/HnPullcV2E=
 github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529/go.mod h1:DxrIzT+xaE7yg65j358z/aeFdxmN0P9QXhEzd20vsDc=
-github.com/sgostarter/i v0.1.7 h1:8OvZYUvqtaPN5ygpIp9fp/GFzgMaN87Ck4ufdUnwHHw=
-github.com/sgostarter/i v0.1.7/go.mod h1:buUUS9rtMjKmQhYNKxiM+brhFX7jLzZKv6AuZlHCgGk=
+github.com/sgostarter/i v0.1.8 h1:e1ZH3YrtmnWCR3FtBrNhdnFnVLk1Ci0zqANh00dzJTY=
+github.com/sgostarter/i v0.1.8/go.mod h1:buUUS9rtMjKmQhYNKxiM+brhFX7jLzZKv6AuZlHCgGk=
 github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61 h1:X9DVGF3F0yXFhq+1bKdOFotZwCZg5ydBv98YL3bPhKw=
 github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61/go.mod h1:5KLny8g++hHgCBbsMYRpxSUsJIi77h/3/CftIiWJox8=
 github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeVRXNmyL/1OwPU0+IJeTBvfc=
