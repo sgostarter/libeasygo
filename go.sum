@@ -75,6 +75,8 @@ github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 h1:f/FNXud6gA3MNr
 github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3/go.mod h1:HgjTstvQsPGkxUsCd2KWxErBblirPizecHcpD3ffK+s=
 github.com/sgostarter/i v0.1.11 h1:Hj2YbMgV9RPxJovphTnB6w3IhE6vAij5Fao0iFcEg6I=
 github.com/sgostarter/i v0.1.11/go.mod h1:buUUS9rtMjKmQhYNKxiM+brhFX7jLzZKv6AuZlHCgGk=
+github.com/sgostarter/i v0.1.12 h1:U3k2MLDDAOihcJTs9jXXIyBKHi+qu/e4fgHbVrSZCyQ=
+github.com/sgostarter/i v0.1.12/go.mod h1:buUUS9rtMjKmQhYNKxiM+brhFX7jLzZKv6AuZlHCgGk=
 github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61 h1:X9DVGF3F0yXFhq+1bKdOFotZwCZg5ydBv98YL3bPhKw=
 github.com/sgostarter/libconfig v0.0.0-20220501124634-dd2bd2401e61/go.mod h1:5KLny8g++hHgCBbsMYRpxSUsJIi77h/3/CftIiWJox8=
 github.com/spf13/cast v1.4.1 h1:s0hze+J0196ZfEMTs80N7UlFt0BDuQ7Q+JDnHiMWKdA=
