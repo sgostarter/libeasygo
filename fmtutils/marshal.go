@@ -17,7 +17,7 @@ func Marshal(v interface{}) string {
 	return fmt.Sprintf("%#v", v)
 }
 
-func JsonMarshal(v interface{}) string {
+func JSONMarshal(v interface{}) string {
 	dat, err := json.Marshal(v)
 	if err == nil {
 		return string(dat)
