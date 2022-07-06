@@ -10,7 +10,7 @@ const (
 	localIPV4 = "127.0.0.1"
 )
 
-func regularIPV4(ip string) string {
+func RegularIPV4(ip string) string {
 	if ip == "::1" {
 		return localIPV4
 	}
@@ -38,7 +38,7 @@ func HTTPGetRealIP(r *http.Request) string {
 		clientIP = addSlice[0]
 	}
 
-	return regularIPV4(clientIP)
+	return RegularIPV4(clientIP)
 }
 
 var privateIPBlocks []*net.IPNet
