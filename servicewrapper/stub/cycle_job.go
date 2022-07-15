@@ -31,6 +31,8 @@ func (ss *cycleJobService) Run(ctx context.Context, logger l.Wrapper) {
 
 	logger.Debug("enter cycle job loop")
 
+	ss.serviceImpl.OnStart(logger)
+
 	duration, err := ss.serviceImpl.DoJob(ctx, logger)
 	if err != nil {
 		logger.Errorf("do job failed: %v", err)
@@ -55,6 +57,8 @@ func (ss *cycleJobService) Run(ctx context.Context, logger l.Wrapper) {
 			}
 		}
 	}
+
+	ss.serviceImpl.OnFinish(logger)
 
 	logger.Debug("leave cycle job loop")
 }

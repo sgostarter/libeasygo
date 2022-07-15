@@ -8,5 +8,7 @@ import (
 )
 
 type CycleJobService interface {
+	OnStart(logger l.Wrapper)
 	DoJob(ctx context.Context, logger l.Wrapper) (time.Duration, error)
+	OnFinish(logger l.Wrapper)
 }
