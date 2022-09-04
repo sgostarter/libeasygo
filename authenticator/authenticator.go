@@ -70,9 +70,8 @@ func hmacSha1(key string, t int64) ([]byte, error) {
 	binary.BigEndian.PutUint64(cData, uint64(t))
 
 	h1 := hmac.New(sha1.New, decodeKey)
-	_, e := h1.Write(cData)
 
-	if e != nil {
+	if _, e := h1.Write(cData); e != nil {
 		return nil, e
 	}
 

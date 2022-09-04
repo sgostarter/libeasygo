@@ -12,8 +12,7 @@ import (
 func HMacSHa256(key, data string) (string, error) {
 	h := hmac.New(sha256.New, []byte(key))
 
-	_, err := io.WriteString(h, data)
-	if err != nil {
+	if _, err := io.WriteString(h, data); err != nil {
 		return "", err
 	}
 
