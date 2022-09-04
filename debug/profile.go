@@ -13,22 +13,50 @@ func StartProfileServer(logger l.Wrapper) {
 	go RunProfileServer(logger)
 }
 
+func authWrapper(tokensMap map[string]interface{}, handler func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		if len(tokensMap) > 0 {
+			pprofToken := request.Header.Get("pprof_token")
+			if _, ok := tokensMap[pprofToken]; !ok {
+				writer.WriteHeader(http.StatusUnauthorized)
+
+				return
+			}
+		}
+
+		handler(writer, request)
+	}
+}
+
 func RunProfileServer(logger l.Wrapper) {
+	RunProfileServerEx(nil, logger)
+}
+
+func RunProfileServerEx(tokens []string, logger l.Wrapper) *http.Server {
+	tokensMap := make(map[string]interface{})
+	for _, token := range tokens {
+		tokensMap[token] = true
+	}
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/debug/pprof/", pprof.Index)
-	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
-	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	mux.HandleFunc("/debug/pprof/", authWrapper(tokensMap, pprof.Index))
+	mux.HandleFunc("/debug/pprof/cmdline", authWrapper(tokensMap, pprof.Cmdline))
+	mux.HandleFunc("/debug/pprof/profile", authWrapper(tokensMap, pprof.Profile))
+	mux.HandleFunc("/debug/pprof/symbol", authWrapper(tokensMap, pprof.Symbol))
+	mux.HandleFunc("/debug/pprof/trace", authWrapper(tokensMap, pprof.Trace))
+
+	var pprofServer *http.Server
+
+	var addr string
 
 	fnTryListen := func(port int) {
-		addr := fmt.Sprintf(":%d", port)
+		addr = fmt.Sprintf(":%d", port)
 		server := &http.Server{
 			Addr:    addr,
 			Handler: mux,
 		}
 
-		logger.WithFields(l.StringField("address", addr)).Info("pprof server listen")
+		pprofServer = server
 
 		if err := server.ListenAndServe(); err != nil {
 			logger.WithFields(l.ErrorField(err)).Error("pprof server")
@@ -53,4 +81,14 @@ func RunProfileServer(logger l.Wrapper) {
 
 		start = time.Now()
 	}
+
+	if initPort < 10000 {
+		logger.WithFields(l.StringField("address", addr)).Info("pprof server listen")
+	} else {
+		pprofServer = nil
+
+		logger.Warn("pprof server start failed")
+	}
+
+	return pprofServer
 }

@@ -87,6 +87,7 @@ func RemoveAll(path string) error {
 // directories named by the PATH environment variable.
 // can change the PATH
 func LookPath(file string) (string, error) {
+	// nolint: ifshort
 	goPath := os.Getenv("GOPATH")
 	if goPath == "" {
 		goPath = build.Default.GOPATH
