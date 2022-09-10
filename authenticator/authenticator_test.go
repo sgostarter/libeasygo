@@ -40,3 +40,8 @@ func Test_MakeGoogleAuthenticator(t *testing.T) {
 		})
 	}
 }
+
+func Test_GetSecret(t *testing.T) {
+	t.Log(GetSecret())
+	t.Log(GetSecret())
+}

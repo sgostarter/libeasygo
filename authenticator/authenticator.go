@@ -2,6 +2,8 @@ package authenticator
 
 import (
 	"crypto/hmac"
+	"crypto/rand"
+
 	// nolint: gosec
 	"crypto/sha1"
 	"encoding/base32"
@@ -10,6 +12,17 @@ import (
 	"net/url"
 	"time"
 )
+
+func GetSecret() string {
+	seed := make([]byte, 20)
+	_, _ = rand.Read(seed)
+
+	return GetSecretEx(seed)
+}
+
+func GetSecretEx(d []byte) string {
+	return base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(d)
+}
 
 // CreateGoogleAuthQRCodeData 创建二维码
 func CreateGoogleAuthQRCodeData(key string, account string, issuer string) string {
