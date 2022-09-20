@@ -80,7 +80,20 @@ func (impl *routineManWithTimeoutCheckImpl) StartRoutine(routine func(ctx contex
 		}()
 
 		routine(impl.ctx, func() bool {
-			return impl.exiting.Load()
+			exit := impl.exiting.Load()
+			if exit {
+				return exit
+			}
+
+			select {
+			case <-impl.ctx.Done():
+				impl.exiting.Store(true)
+
+				return true
+			default:
+			}
+
+			return false
 		})
 	}()
 }

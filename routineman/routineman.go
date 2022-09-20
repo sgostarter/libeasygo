@@ -47,7 +47,20 @@ func (impl *routineManImpl) StartRoutine(routine func(ctx context.Context, exiti
 		defer impl.wg.Done()
 
 		routine(impl.ctx, func() bool {
-			return impl.exiting.Load()
+			exit := impl.exiting.Load()
+			if exit {
+				return exit
+			}
+
+			select {
+			case <-impl.ctx.Done():
+				impl.exiting.Store(true)
+
+				return true
+			default:
+			}
+
+			return false
 		})
 	}()
 }
