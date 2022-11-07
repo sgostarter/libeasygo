@@ -23,6 +23,10 @@ func NewTimeSpanEx(duration time.Duration, location *time.Location) *TimeSpan {
 
 	_, locationOffset := time.Now().In(location).Zone()
 
+	if duration < time.Second {
+		panic("invalid duration")
+	}
+
 	return &TimeSpan{
 		durationSeconds: int64(duration / time.Second),
 		location:        location,
@@ -63,4 +67,19 @@ func (ts *TimeSpan) DiffLabel(labelStart, labelFinish string) (n int, err error)
 
 func (ts *TimeSpan) Label2Time(l string) (t time.Time, err error) {
 	return time.ParseInLocation(humanLayout, l, time.Local)
+}
+
+func (ts *TimeSpan) LabelString2Int(l string) (n int64, err error) {
+	t, err := ts.Label2Time(l)
+	if err != nil {
+		return
+	}
+
+	n = t.Unix()
+
+	return
+}
+
+func (ts *TimeSpan) LabelInt2String(n int64) string {
+	return ts.GetLabel(time.Unix(n, 0))
 }
