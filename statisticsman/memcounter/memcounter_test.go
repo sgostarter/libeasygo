@@ -2,10 +2,11 @@ package memcounter
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func printMc(t *testing.T, mc *MemCounter) {
@@ -13,6 +14,7 @@ func printMc(t *testing.T, mc *MemCounter) {
 	for _, d := range mc.ds {
 		info += fmt.Sprintf("[%d %d] ", d.tm, d.v)
 	}
+
 	t.Log(info)
 }
 

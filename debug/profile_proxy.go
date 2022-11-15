@@ -3,8 +3,8 @@ package debug
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type proxyHandler struct {
@@ -19,14 +19,14 @@ func (impl *proxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
-	r.Body = ioutil.NopCloser(bytes.NewReader(body))
+	r.Body = io.NopCloser(bytes.NewReader(body))
 
 	// nolint: noctx
 	proxyReq, _ := http.NewRequest(r.Method, target+r.RequestURI, bytes.NewReader(body))
@@ -65,7 +65,8 @@ func (impl *proxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func RunProfileProxy(address, token string) error {
 	server := &http.Server{
-		Addr: address,
+		Addr:        address,
+		ReadTimeout: time.Second * 6,
 		Handler: &proxyHandler{
 			token: token,
 		},

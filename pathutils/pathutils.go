@@ -3,7 +3,7 @@ package pathutils
 import (
 	"go/build"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -126,14 +126,22 @@ func DCopy(srcdir, destdir string, info os.FileInfo) error {
 	// nolint: errcheck
 	defer os.Chmod(destdir, originalMode)
 
-	contents, err := ioutil.ReadDir(srcdir)
+	contents, err := os.ReadDir(srcdir)
 	if err != nil {
 		return err
 	}
 
 	for _, content := range contents {
-		cs, cd := filepath.Join(srcdir, content.Name()), filepath.Join(destdir, content.Name())
-		if err := xCopy(cs, cd, content); err != nil {
+		var subInfo fs.FileInfo
+
+		subInfo, err = content.Info()
+		if err != nil {
+			return err
+		}
+
+		cs, cd := filepath.Join(srcdir, content.Name()), filepath.Join(destdir, subInfo.Name())
+
+		if err = xCopy(cs, cd, subInfo); err != nil {
 			// If any error, exit immediately
 			return err
 		}

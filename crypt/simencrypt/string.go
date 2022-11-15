@@ -3,7 +3,7 @@ package simencrypt
 import (
 	"encoding/hex"
 
-	"github.com/sgostarter/libeasygo/commerr"
+	"github.com/sgostarter/i/commerr"
 )
 
 func EncodeString(s string) string {

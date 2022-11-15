@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/golang/snappy"
-	"github.com/sgostarter/libeasygo/commerr"
+	"github.com/sgostarter/i/commerr"
 )
 
 type Type byte

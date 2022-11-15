@@ -3,7 +3,7 @@ package aes
 import (
 	"crypto/aes"
 
-	"github.com/sgostarter/libeasygo/commerr"
+	"github.com/sgostarter/i/commerr"
 )
 
 type PaddingType int

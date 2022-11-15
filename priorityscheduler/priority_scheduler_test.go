@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sgostarter/libeasygo/cuserror"
+	"github.com/sgostarter/i/commerr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +19,7 @@ func (r *TestPriorityRunner) Run(ctx context.Context) (interface{}, error) {
 	case <-time.After(r.delay):
 		return r.idx, nil
 	case <-ctx.Done():
-		return nil, cuserror.NewWithErrorMsg("cancelled")
+		return nil, commerr.ErrCanceled
 	}
 }
 

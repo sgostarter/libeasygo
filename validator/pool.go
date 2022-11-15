@@ -3,7 +3,7 @@ package validator
 import (
 	"strings"
 
-	"github.com/sgostarter/libeasygo/commerr"
+	"github.com/sgostarter/i/commerr"
 )
 
 const (
@@ -35,7 +35,7 @@ func ValidatePoolRemoteAddress(s string) (hostAndPort string, shouldUse int, err
 
 	_, _, ok := ValidateRemoteAddress(hostAndPort)
 	if !ok {
-		err = commerr.ErrUnknownBadFormat
+		err = commerr.ErrBadFormat
 
 		return
 	}

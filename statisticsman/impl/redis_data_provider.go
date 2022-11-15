@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/sgostarter/libeasygo/commerr"
+	"github.com/sgostarter/i/commerr"
 	"github.com/sgostarter/libeasygo/statisticsman/inters"
 )
 

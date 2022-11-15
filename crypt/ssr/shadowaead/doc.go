@@ -9,22 +9,21 @@ where each packet is either delivered intact or lost.
 An encrypted stream starts with a random saltseed to derive a session key, followed by any number of
 encrypted records. Each encrypted record has the following structure:
 
-    [encrypted payload length]
-    [payload length tag]
-    [encrypted payload]
-    [payload tag]
+	[encrypted payload length]
+	[payload length tag]
+	[encrypted payload]
+	[payload tag]
 
 Payload length is 2-byte unsigned big-endian integer capped at 0x3FFF (16383).
 The higher 2 bits are reserved and must be set to zero. The first AEAD encrypt/decrypt
 operation uses a counting nonce starting from 0. After each encrypt/decrypt operation,
 the nonce is incremented by one as if it were an unsigned little-endian integer.
 
-
 Each encrypted packet transmitted on a packet-oriented connection has the following structure:
 
-    [random saltseed]
-    [encrypted payload]
-    [payload tag]
+	[random saltseed]
+	[encrypted payload]
+	[payload tag]
 
 The saltseed is used to derive a subkey to initiate an AEAD. Packets are encrypted/decrypted independently
 using zero nonce.

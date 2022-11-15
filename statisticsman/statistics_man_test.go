@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sgostarter/libeasygo/commerr"
+	"github.com/sgostarter/i/commerr"
 	"github.com/sgostarter/libeasygo/statisticsman/counter"
 	"github.com/sgostarter/libeasygo/statisticsman/impl"
 	"github.com/sgostarter/libeasygo/statisticsman/inters"

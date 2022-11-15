@@ -3,8 +3,8 @@ package servicewrapper
 import (
 	"context"
 
+	"github.com/sgostarter/i/commerr"
 	"github.com/sgostarter/i/l"
-	"github.com/sgostarter/libeasygo/commerr"
 	"github.com/sgostarter/libeasygo/routineman"
 	"github.com/sgostarter/libeasygo/servicewrapper/ssinterface"
 	"go.uber.org/atomic"

@@ -7,13 +7,13 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/sgostarter/libeasygo/cuserror"
 )
 
 func GetCertPublicKeyHash(certFile string) (string, error) {
-	certPEMBlock, err := ioutil.ReadFile(certFile)
+	certPEMBlock, err := os.ReadFile(certFile)
 	if err != nil {
 		return "", cuserror.NewWithErrorMsg(fmt.Sprintf("%v cert load failed: %v", certFile, err))
 	}

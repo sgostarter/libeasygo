@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sgostarter/i/commerr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,7 @@ func (r *TestPriorityRunner2) Run(ctx context.Context) (interface{}, error) {
 	case <-time.After(r.delay):
 		return nil, nil
 	case <-ctx.Done():
-		return nil, ErrCancelled
+		return nil, commerr.ErrCanceled
 	}
 }
 

@@ -51,9 +51,11 @@ func RunProfileServerEx(tokens []string, logger l.Wrapper) *http.Server {
 
 	fnTryListen := func(port int) {
 		addr = fmt.Sprintf(":%d", port)
+
 		server := &http.Server{
-			Addr:    addr,
-			Handler: mux,
+			Addr:        addr,
+			Handler:     mux,
+			ReadTimeout: time.Second * 3,
 		}
 
 		pprofServer = server
