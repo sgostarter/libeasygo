@@ -1,4 +1,4 @@
-package stg
+package redisex
 
 import (
 	"context"

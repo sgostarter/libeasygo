@@ -14,7 +14,7 @@ import (
 	"github.com/sgostarter/libeasygo/statisticsman/counter"
 	"github.com/sgostarter/libeasygo/statisticsman/impl"
 	"github.com/sgostarter/libeasygo/statisticsman/inters"
-	"github.com/sgostarter/libeasygo/stg"
+	"github.com/sgostarter/libeasygo/stg/redisex"
 	"github.com/sgostarter/libeasygo/ut"
 	"github.com/stretchr/testify/assert"
 )
@@ -49,7 +49,7 @@ func (tsk *testDataKey) From(s string) error {
 
 func TestStatisticsMan(t *testing.T) {
 	cfg := ut.SetupUTConfig4Redis(t)
-	redisCli, err := stg.InitRedis(cfg.RedisDNS)
+	redisCli, err := redisex.InitRedis(cfg.RedisDNS)
 	assert.Nil(t, err)
 	assert.NotNil(t, redisCli)
 
@@ -133,7 +133,7 @@ func TestStatisticsMan(t *testing.T) {
 
 func TestStatisticsMan2(t *testing.T) {
 	cfg := ut.SetupUTConfig4Redis(t)
-	redisCli, err := stg.InitRedis(cfg.RedisDNS)
+	redisCli, err := redisex.InitRedis(cfg.RedisDNS)
 	assert.Nil(t, err)
 	assert.NotNil(t, redisCli)
 
@@ -151,7 +151,7 @@ func TestStatisticsMan2(t *testing.T) {
 // nolint: funlen
 func TestStatisticsMan3(t *testing.T) {
 	cfg := ut.SetupUTConfig4Redis(t)
-	redisCli, err := stg.InitRedis(cfg.RedisDNS)
+	redisCli, err := redisex.InitRedis(cfg.RedisDNS)
 	assert.Nil(t, err)
 	assert.NotNil(t, redisCli)
 
