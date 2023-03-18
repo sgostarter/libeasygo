@@ -31,4 +31,5 @@ using zero nonce.
 In both stream-oriented and packet-oriented connections, length of nonce and tag varies
 depending on which AEAD is used. Salt should be at least 16-byte long.
 */
+
 package shadowaead

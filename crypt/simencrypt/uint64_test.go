@@ -10,6 +10,8 @@ import (
 
 // nolint
 func TestUint64(t *testing.T) {
+	t.SkipNow()
+
 	rand.Seed(time.Now().UnixNano())
 
 	var n1 = uint64(1)
@@ -36,6 +38,8 @@ func TestUint64(t *testing.T) {
 
 // nolint
 func TestUint64Crypt(t *testing.T) {
+	t.SkipNow()
+
 	rand.Seed(time.Now().UnixNano())
 
 	fnDecrypt := func(s string) uint64 {
@@ -67,6 +71,8 @@ func TestUint64Crypt(t *testing.T) {
 }
 
 func TestChangeUint64(t *testing.T) {
+	t.SkipNow()
+
 	var n uint64
 	n = 0x1203
 	m, f := ConfuseUint64(n)

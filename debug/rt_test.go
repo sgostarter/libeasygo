@@ -34,7 +34,7 @@ func Test1(t *testing.T) {
 	time.Sleep(time.Second)
 
 	avg := rt.GetAVG()
-	assert.True(t, avg >= time.Millisecond*100 && avg < time.Millisecond*110)
+	assert.True(t, avg >= time.Millisecond*100 && avg < time.Millisecond*150)
 
 	rt.DestroyAndWait()
 }

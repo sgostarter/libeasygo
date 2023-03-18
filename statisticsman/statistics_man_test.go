@@ -48,6 +48,8 @@ func (tsk *testDataKey) From(s string) error {
 }
 
 func TestStatisticsMan(t *testing.T) {
+	t.SkipNow()
+
 	cfg := ut.SetupUTConfig4Redis(t)
 	redisCli, err := redisex.InitRedis(cfg.RedisDNS)
 	assert.Nil(t, err)
@@ -150,6 +152,8 @@ func TestStatisticsMan2(t *testing.T) {
 
 // nolint: funlen
 func TestStatisticsMan3(t *testing.T) {
+	t.SkipNow()
+
 	cfg := ut.SetupUTConfig4Redis(t)
 	redisCli, err := redisex.InitRedis(cfg.RedisDNS)
 	assert.Nil(t, err)

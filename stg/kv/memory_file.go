@@ -54,6 +54,7 @@ func (impl *memoryFileStorageImpl) load() error {
 	}
 
 	var m map[string]string
+
 	err = json.Unmarshal(d, &m)
 	if err != nil {
 		return err

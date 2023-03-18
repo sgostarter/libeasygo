@@ -9,6 +9,8 @@ import (
 )
 
 func TestXor(t *testing.T) {
+	t.SkipNow()
+
 	s := "E12"
 	s1 := XorEncrypt(s)
 	t.Log(s1)

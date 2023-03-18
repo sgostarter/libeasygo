@@ -8,6 +8,8 @@ import (
 )
 
 func TestMongo(t *testing.T) {
+	t.SkipNow()
+
 	cli, opts, err := InitMongo("mongodb://mongo_default_user:mongo_default_pass@127.0.0.1:8309/my_db")
 	assert.Nil(t, err)
 	assert.NotNil(t, cli)

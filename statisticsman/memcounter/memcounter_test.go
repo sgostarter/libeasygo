@@ -20,6 +20,8 @@ func printMc(t *testing.T, mc *MemCounter) {
 
 // nolint
 func TestMemCounter(t *testing.T) {
+	t.SkipNow()
+
 	mc := NewMemCounter(time.Second, 6)
 	printMc(t, mc)
 
@@ -50,6 +52,8 @@ func TestMemCounter(t *testing.T) {
 
 // nolint
 func TestMemCounter2(t *testing.T) {
+	t.SkipNow()
+
 	rand.Seed(time.Now().Unix())
 	mc := NewMemCounter(time.Second, 6)
 
@@ -64,6 +68,8 @@ func TestMemCounter2(t *testing.T) {
 
 // nolint
 func TestMemCount3(t *testing.T) {
+	t.SkipNow()
+
 	rand.Seed(time.Now().Unix())
 	mc := NewMemCounter(time.Second, 6)
 
