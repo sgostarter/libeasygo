@@ -1,12 +1,12 @@
 package kv
 
 import (
+	"encoding/json"
 	"os"
 	"sync"
 
 	"github.com/sgostarter/i/commerr"
 	"github.com/sgostarter/libeasygo/pathutils"
-	"gopkg.in/yaml.v3"
 )
 
 func NewMemoryFileStorage(fileName string) (StorageTiny, error) {
@@ -54,7 +54,7 @@ func (impl *memoryFileStorageImpl) load() error {
 	}
 
 	var m map[string]string
-	err = yaml.Unmarshal(d, &m)
+	err = json.Unmarshal(d, &m)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (impl *memoryFileStorageImpl) load() error {
 }
 
 func (impl *memoryFileStorageImpl) save() error {
-	d, err := yaml.Marshal(impl.m)
+	d, err := json.Marshal(impl.m)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func (impl *memoryFileStorageImpl) save() error {
 //
 
 func (impl *memoryFileStorageImpl) Set(key string, v interface{}) (err error) {
-	d, err := yaml.Marshal(v)
+	d, err := json.Marshal(v)
 	if err != nil {
 		return
 	}
@@ -109,7 +109,7 @@ func (impl *memoryFileStorageImpl) Get(key string, v interface{}) (ok bool, err 
 		return
 	}
 
-	err = yaml.Unmarshal([]byte(d), v)
+	err = json.Unmarshal([]byte(d), v)
 	if err != nil {
 		return
 	}
@@ -172,7 +172,7 @@ func (impl *memoryFileStorageImpl) GetList(itemGen func() interface{}) (items []
 			break
 		}
 
-		err = yaml.Unmarshal(value, item)
+		err = json.Unmarshal(value, item)
 		if err != nil {
 			continue
 		}
@@ -205,7 +205,7 @@ func (impl *memoryFileStorageImpl) GetMap(itemGen func() interface{}) (items map
 			break
 		}
 
-		err = yaml.Unmarshal(value, item)
+		err = json.Unmarshal(value, item)
 		if err != nil {
 			continue
 		}
