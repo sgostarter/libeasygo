@@ -48,13 +48,13 @@ func (mwf *MemWithFile[T, S, L]) Read(proc func(memD T)) {
 	proc(mwf.memD)
 }
 
-func (mwf *MemWithFile[T, S, L]) Change(proc func(memD T) (newMemD T, changed bool)) error {
+func (mwf *MemWithFile[T, S, L]) Change(proc func(memD T) (newMemD T, err error)) error {
 	mwf.lock.Lock()
 	defer mwf.lock.Unlock()
 
-	newMemD, changed := proc(mwf.memD)
-	if !changed {
-		return nil
+	newMemD, err := proc(mwf.memD)
+	if err != nil {
+		return err
 	}
 
 	mwf.memD = newMemD
@@ -91,6 +91,10 @@ func (mwf *MemWithFile[T, S, L]) load() error {
 }
 
 func (mwf *MemWithFile[T, S, L]) save() error {
+	if mwf.fileName == "" {
+		return nil
+	}
+
 	d, err := json.Marshal(mwf.memD)
 	if err != nil {
 		return err

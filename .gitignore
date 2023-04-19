@@ -2,3 +2,4 @@
 /config.yaml
 /ut.yaml
 tmp/
+ut.*txt

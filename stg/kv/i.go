@@ -8,6 +8,6 @@ type Storage interface {
 
 type StorageTiny interface {
 	Storage
-	GetList(itemGen func() interface{}) (items []interface{}, err error)
-	GetMap(itemGen func() interface{}) (items map[string]interface{}, err error)
+	GetList(itemGen func(key string) interface{}) (items []interface{}, err error)
+	GetMap(itemGen func(key string) interface{}) (items map[string]interface{}, err error)
 }

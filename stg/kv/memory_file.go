@@ -153,8 +153,8 @@ func (impl *memoryFileStorageImpl) getDataMap() (values map[string][]byte, err e
 	return
 }
 
-func (impl *memoryFileStorageImpl) GetList(itemGen func() interface{}) (items []interface{}, err error) {
-	if itemGen() == nil {
+func (impl *memoryFileStorageImpl) GetList(itemGen func(key string) interface{}) (items []interface{}, err error) {
+	if itemGen == nil {
 		err = commerr.ErrInvalidArgument
 
 		return
@@ -166,7 +166,7 @@ func (impl *memoryFileStorageImpl) GetList(itemGen func() interface{}) (items []
 	}
 
 	for _, value := range values {
-		item := itemGen()
+		item := itemGen("")
 		if item == nil {
 			err = commerr.ErrNotFound
 
@@ -184,8 +184,8 @@ func (impl *memoryFileStorageImpl) GetList(itemGen func() interface{}) (items []
 	return
 }
 
-func (impl *memoryFileStorageImpl) GetMap(itemGen func() interface{}) (items map[string]interface{}, err error) {
-	if itemGen() == nil {
+func (impl *memoryFileStorageImpl) GetMap(itemGen func(key string) interface{}) (items map[string]interface{}, err error) {
+	if itemGen == nil {
 		err = commerr.ErrInvalidArgument
 
 		return
@@ -199,7 +199,7 @@ func (impl *memoryFileStorageImpl) GetMap(itemGen func() interface{}) (items map
 	items = make(map[string]interface{})
 
 	for key, value := range values {
-		item := itemGen()
+		item := itemGen("")
 		if item == nil {
 			err = commerr.ErrNotFound
 
