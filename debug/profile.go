@@ -32,7 +32,20 @@ func RunProfileServer(logger l.Wrapper) {
 	RunProfileServerEx(nil, logger)
 }
 
-func RunProfileServerEx(tokens []string, logger l.Wrapper) *http.Server {
+func RunProfileServerEx(tokens []string, logger l.Wrapper) {
+	s, _, c := StartProfileServerEx(tokens, logger)
+	if s == nil {
+		return
+	}
+
+	<-c
+}
+
+func StartProfileServerEx(tokens []string, logger l.Wrapper) (s *http.Server, addr string, c chan error) {
+	if logger == nil {
+		logger = l.NewNopLoggerWrapper()
+	}
+
 	tokensMap := make(map[string]interface{})
 	for _, token := range tokens {
 		tokensMap[token] = true
@@ -45,11 +58,7 @@ func RunProfileServerEx(tokens []string, logger l.Wrapper) *http.Server {
 	mux.HandleFunc("/debug/pprof/symbol", authWrapper(tokensMap, pprof.Symbol))
 	mux.HandleFunc("/debug/pprof/trace", authWrapper(tokensMap, pprof.Trace))
 
-	var pprofServer *http.Server
-
-	var addr string
-
-	fnTryListen := func(port int) {
+	fnTryListen := func(port int, sendCh chan error) {
 		addr = fmt.Sprintf(":%d", port)
 
 		server := &http.Server{
@@ -58,18 +67,37 @@ func RunProfileServerEx(tokens []string, logger l.Wrapper) *http.Server {
 			ReadTimeout: time.Second * 3,
 		}
 
-		pprofServer = server
+		s = server
 
-		if err := server.ListenAndServe(); err != nil {
+		err := server.ListenAndServe()
+		if err != nil {
 			logger.WithFields(l.ErrorField(err)).Error("pprof server")
 		}
+
+		sendCh <- err
 	}
 
 	start := time.Now()
 	initPort := 6060
 
-	for {
-		fnTryListen(initPort)
+	var success bool
+
+	for !success {
+		ch := make(chan error, 5)
+
+		go func() {
+			fnTryListen(initPort, ch)
+		}()
+
+		select {
+		case <-time.After(time.Second * 2):
+			c = ch
+			success = true
+
+			continue
+		case <-ch:
+			close(ch)
+		}
 
 		if time.Since(start) > 30*time.Second {
 			break
@@ -84,13 +112,14 @@ func RunProfileServerEx(tokens []string, logger l.Wrapper) *http.Server {
 		start = time.Now()
 	}
 
-	if initPort < 10000 {
+	if c != nil {
 		logger.WithFields(l.StringField("address", addr)).Info("pprof server listen")
 	} else {
-		pprofServer = nil
+		s = nil
+		addr = ""
 
 		logger.Warn("pprof server start failed")
 	}
 
-	return pprofServer
+	return
 }
