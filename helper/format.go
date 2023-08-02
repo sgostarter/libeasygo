@@ -2,42 +2,42 @@ package helper
 
 import "fmt"
 
-type HRUnitLevel int
+type VUnitLevel int
 
 const (
-	HRUnitLevelAuto HRUnitLevel = iota
-	HRUnitLevelB
-	HRUnitLevelKB
-	HRUnitLevelMB
-	HRUnitLevelGB
-	HRUnitLevelTB
-	HRUnitLevelPB
+	VUnitLevelAuto VUnitLevel = iota
+	VUnitLevelB
+	VUnitLevelKB
+	VUnitLevelMB
+	VUnitLevelGB
+	VUnitLevelTB
+	VUnitLevelPB
 )
 
-func CalcVUnitLevel(v float64, base uint) HRUnitLevel {
-	var level HRUnitLevel
+func CalcVUnitLevel(v float64, base uint) VUnitLevel {
+	var level VUnitLevel
 
 	fBase := float64(base)
 
 	if v < fBase {
-		level = HRUnitLevelB
+		level = VUnitLevelB
 	} else if v < fBase*fBase {
-		level = HRUnitLevelKB
+		level = VUnitLevelKB
 	} else if v < fBase*fBase*fBase {
-		level = HRUnitLevelMB
+		level = VUnitLevelMB
 	} else if v < fBase*fBase*fBase*fBase {
-		level = HRUnitLevelGB
+		level = VUnitLevelGB
 	} else if v < fBase*fBase*fBase*fBase*fBase {
-		level = HRUnitLevelTB
+		level = VUnitLevelTB
 	} else {
-		level = HRUnitLevelPB
+		level = VUnitLevelPB
 	}
 
 	return level
 }
 
-func FormatVEx(v float64, base uint, u string, level HRUnitLevel) (float64, string) {
-	if level == HRUnitLevelAuto {
+func FormatVEx(v float64, base uint, u string, level VUnitLevel) (float64, string) {
+	if level == VUnitLevelAuto {
 		level = CalcVUnitLevel(v, base)
 	}
 
@@ -46,23 +46,23 @@ func FormatVEx(v float64, base uint, u string, level HRUnitLevel) (float64, stri
 	switch level {
 	default:
 		fallthrough
-	case HRUnitLevelB:
+	case VUnitLevelB:
 		return v, fmt.Sprintf("%s", u)
-	case HRUnitLevelKB:
+	case VUnitLevelKB:
 		return v / fBase, fmt.Sprintf("K%s", u)
-	case HRUnitLevelMB:
+	case VUnitLevelMB:
 		return v / fBase / fBase, fmt.Sprintf("M%s", u)
-	case HRUnitLevelGB:
+	case VUnitLevelGB:
 		return v / fBase / fBase / fBase, fmt.Sprintf("G%s", u)
-	case HRUnitLevelTB:
+	case VUnitLevelTB:
 		return v / fBase / fBase / fBase / fBase, fmt.Sprintf("T%s", u)
-	case HRUnitLevelPB:
+	case VUnitLevelPB:
 		return v / fBase / fBase / fBase / fBase / fBase, fmt.Sprintf("P%s", u)
 	}
 }
 
-func FormatVExToString(v float64, base uint, u string, level HRUnitLevel) string {
-	if level == HRUnitLevelAuto {
+func FormatVExToString(v float64, base uint, u string, level VUnitLevel) string {
+	if level == VUnitLevelAuto {
 		level = CalcVUnitLevel(v, base)
 	}
 
