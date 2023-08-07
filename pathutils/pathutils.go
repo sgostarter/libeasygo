@@ -103,7 +103,7 @@ func LookPath(file string) (string, error) {
 
 // LCopy is for a symlink,
 // with just creating a new symlink by replicating src symlink.
-func LCopy(src, dest string, info os.FileInfo) error {
+func LCopy(src, dest string, _ os.FileInfo) error {
 	src, err := os.Readlink(src)
 	if err != nil {
 		return err

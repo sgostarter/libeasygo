@@ -14,15 +14,15 @@ type TestCycleJob struct {
 	id int
 }
 
-func (job *TestCycleJob) OnStart(logger l.Wrapper) {
+func (job *TestCycleJob) OnStart(_ l.Wrapper) {
 
 }
 
-func (job *TestCycleJob) OnFinish(logger l.Wrapper) {
+func (job *TestCycleJob) OnFinish(_ l.Wrapper) {
 
 }
 
-func (job *TestCycleJob) DoJob(ctx context.Context, logger l.Wrapper) (time.Duration, error) {
+func (job *TestCycleJob) DoJob(_ context.Context, _ l.Wrapper) (time.Duration, error) {
 	// nolint: forbidigo
 	fmt.Printf("[%v]id: %v\n", time.Now(), job.id)
 

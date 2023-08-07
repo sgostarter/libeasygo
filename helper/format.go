@@ -47,7 +47,7 @@ func FormatVEx(v float64, base uint, u string, level VUnitLevel) (float64, strin
 	default:
 		fallthrough
 	case VUnitLevelB:
-		return v, fmt.Sprintf("%s", u)
+		return v, u
 	case VUnitLevelKB:
 		return v / fBase, fmt.Sprintf("K%s", u)
 	case VUnitLevelMB:
@@ -67,5 +67,6 @@ func FormatVExToString(v float64, base uint, u string, level VUnitLevel) string 
 	}
 
 	v, s := FormatVEx(v, base, u, level)
+
 	return fmt.Sprintf("%.02f %s", v, s)
 }

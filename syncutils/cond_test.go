@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// nolint
 func TestRace(t *testing.T) {
 	x := 0
 	c := NewCond(&sync.Mutex{})

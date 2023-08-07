@@ -1,9 +1,9 @@
 package mwf
 
 import (
+	"encoding/json"
 	"os"
 
-	"encoding/json"
 	"github.com/sgostarter/libeasygo/pathutils"
 )
 

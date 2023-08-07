@@ -8,8 +8,7 @@ import (
 )
 
 func TestMemAndFile1(t *testing.T) {
-	var mm *mwf.MemWithFile[map[int]string, mwf.Serial, mwf.Lock]
-	mm = mwf.NewMemWithFile[map[int]string, mwf.Serial, mwf.Lock](make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt")
+	mm := mwf.NewMemWithFile[map[int]string, mwf.Serial, mwf.Lock](make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt")
 	t.Log(mm)
 
 	memWithFile := mwf.NewMemWithFile(make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt")
