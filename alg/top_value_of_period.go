@@ -11,8 +11,8 @@ type TopCheck[T any] interface {
 }
 
 func NewTopValueOfPeriod[T any, L i.RWLock](lock L, period time.Duration,
-	check TopCheck[T]) TopValueOfPeriod[T, L] {
-	return TopValueOfPeriod[T, L]{
+	check TopCheck[T]) *TopValueOfPeriod[T, L] {
+	return &TopValueOfPeriod[T, L]{
 		lock:    lock,
 		period:  period,
 		check:   check,
