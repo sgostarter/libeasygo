@@ -1,32 +1,29 @@
 package debug
 
 import (
-	"crypto/tls"
+	"context"
 	"net"
+	"time"
+
+	"github.com/sgostarter/libeasygo/netutils"
 )
 
-func ConnectTCP(remoteAddr string) (err error) {
-	tcpAddr, err := net.ResolveTCPAddr("tcp", remoteAddr)
-	if err != nil {
-		return
+func dialTCPEx(useSSL bool, address string, timeout time.Duration) (net.Conn, error) {
+	var modifiers []netutils.TLSConfigModifier
+
+	if useSSL {
+		modifiers = append(modifiers, netutils.TLSConfigModifier4InsecureSkipVerify)
 	}
 
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
-	if err != nil {
-		return
-	}
-
-	_ = conn.Close()
-
-	return
+	return netutils.DialTCPWithTimeout(context.TODO(), useSSL, address, timeout, modifiers...)
 }
 
-func ConnectTLS(remoteAddr string, insecureSkipVerify bool) (err error) {
-	conf := &tls.Config{
-		InsecureSkipVerify: insecureSkipVerify, // nolint: gosec
-	}
+func TestTCPConnect(remoteAddr string, useTLS bool) (err error) {
+	return TestTCPConnectWithTimeout(remoteAddr, useTLS, time.Second*10)
+}
 
-	conn, err := tls.Dial("tcp", remoteAddr, conf)
+func TestTCPConnectWithTimeout(remoteAddr string, useTLS bool, timeout time.Duration) (err error) {
+	conn, err := dialTCPEx(useTLS, remoteAddr, timeout)
 	if err != nil {
 		return
 	}

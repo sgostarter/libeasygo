@@ -7,6 +7,7 @@ import (
 )
 
 func TestConnectTCP(t *testing.T) {
-	assert.Nil(t, ConnectTCP("www.ymipro.com:80"))
-	assert.Nil(t, ConnectTLS("www.ymipro.com:443", false))
+	assert.Nil(t, TestTCPConnect("www.ymipro.com:80", false))
+	assert.Nil(t, TestTCPConnect("www.ymipro.com:443", true))
+	assert.NotNil(t, TestTCPConnect("abc.com:80", true))
 }
