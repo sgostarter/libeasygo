@@ -5,6 +5,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/sgostarter/i/commerr"
 	"github.com/sgostarter/libeasygo/netutils"
 )
 
@@ -19,7 +20,24 @@ func dialTCPEx(useSSL bool, address string, timeout time.Duration) (net.Conn, er
 }
 
 func TestTCPConnect(remoteAddr string, useTLS bool) (err error) {
-	return TestTCPConnectWithTimeout(remoteAddr, useTLS, time.Second*10)
+	return TestTCPConnectEx(remoteAddr, useTLS, time.Second*10, false)
+}
+
+func TestTCPConnectEx(remoteAddr string, useTLS bool, timeout time.Duration, strictMode bool) (err error) {
+	err = TestTCPConnectWithTimeout(remoteAddr, useTLS, timeout)
+	if err != nil {
+		return
+	}
+
+	if !strictMode || useTLS {
+		return
+	}
+
+	if TestTCPConnectWithTimeout(remoteAddr, true, timeout) == nil {
+		err = commerr.ErrReject
+	}
+
+	return
 }
 
 func TestTCPConnectWithTimeout(remoteAddr string, useTLS bool, timeout time.Duration) (err error) {
