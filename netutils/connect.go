@@ -1,4 +1,4 @@
-package debug
+package netutils
 
 import (
 	"context"
@@ -6,17 +6,16 @@ import (
 	"time"
 
 	"github.com/sgostarter/i/commerr"
-	"github.com/sgostarter/libeasygo/netutils"
 )
 
 func dialTCPEx(useSSL bool, address string, timeout time.Duration) (net.Conn, error) {
-	var modifiers []netutils.TLSConfigModifier
+	var modifiers []TLSConfigModifier
 
 	if useSSL {
-		modifiers = append(modifiers, netutils.TLSConfigModifier4InsecureSkipVerify)
+		modifiers = append(modifiers, TLSConfigModifier4InsecureSkipVerify)
 	}
 
-	return netutils.DialTCPWithTimeout(context.TODO(), useSSL, address, timeout, modifiers...)
+	return DialTCPWithTimeout(context.TODO(), useSSL, address, timeout, modifiers...)
 }
 
 func TestTCPConnect(remoteAddr string, useTLS bool) (err error) {
