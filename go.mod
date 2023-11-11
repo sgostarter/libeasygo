@@ -16,6 +16,7 @@ require (
 
 require (
 	github.com/golang/snappy v0.0.4
+	github.com/kardianos/service v1.2.2
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
 	github.com/shirou/gopsutil/v3 v3.23.9
 	github.com/tdewolff/minify/v2 v2.11.2
