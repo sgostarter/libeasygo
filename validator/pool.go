@@ -28,6 +28,16 @@ func PoolAddressShouldTLS(s string) int {
 	return ShouldUseUnknown
 }
 
+func ValidateGetHostOfURL(s string) string {
+	s = strings.TrimLeft(s, "\r\n\t ")
+
+	hostAndPort, _ := validatePoolAddress(s)
+
+	host, _, _ := ValidateRemoteAddress(hostAndPort)
+
+	return host
+}
+
 func ValidatePoolRemoteAddress(s string) (hostAndPort string, shouldUse int, err error) {
 	s = strings.TrimLeft(s, "\r\n\t ")
 

@@ -126,6 +126,12 @@ func Latency(host string) (latency time.Duration, err error) {
 }
 
 func LatencyEx(host string) (latency time.Duration, err error) {
+	if host == "" {
+		err = commerr.ErrInvalidArgument
+
+		return
+	}
+
 	timeout := time.Second * 5
 
 	conn, err := net.DialTimeout("ip:icmp", host, timeout)
