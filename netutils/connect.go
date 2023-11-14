@@ -8,10 +8,10 @@ import (
 	"github.com/sgostarter/i/commerr"
 )
 
-func dialTCPEx(useSSL bool, address string, timeout time.Duration) (net.Conn, error) {
+func dialTCPEx(useSSL, ignoreCert bool, address string, timeout time.Duration) (net.Conn, error) {
 	var modifiers []TLSConfigModifier
 
-	if useSSL {
+	if useSSL && ignoreCert {
 		modifiers = append(modifiers, TLSConfigModifier4InsecureSkipVerify)
 	}
 
@@ -40,7 +40,11 @@ func TestTCPConnectEx(remoteAddr string, useTLS bool, timeout time.Duration, str
 }
 
 func TestTCPConnectWithTimeout(remoteAddr string, useTLS bool, timeout time.Duration) (err error) {
-	conn, err := dialTCPEx(useTLS, remoteAddr, timeout)
+	return TestTCPConnectWithTimeoutEx(remoteAddr, useTLS, true, timeout)
+}
+
+func TestTCPConnectWithTimeoutEx(remoteAddr string, useTLS, ignoreCert bool, timeout time.Duration) (err error) {
+	conn, err := dialTCPEx(useTLS, ignoreCert, remoteAddr, timeout)
 	if err != nil {
 		return
 	}
