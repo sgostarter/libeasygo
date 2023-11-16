@@ -33,7 +33,7 @@ func (sw *ServiceWrapper) Start(serviceImpl ssinterface.ServiceStub) error {
 		return commerr.ErrInvalidArgument
 	}
 
-	if !sw.startFlag.CAS(false, true) {
+	if !sw.startFlag.CompareAndSwap(false, true) {
 		sw.logger.Fatal("initAgain")
 
 		return commerr.ErrAlreadyExists
