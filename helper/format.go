@@ -70,3 +70,7 @@ func FormatVExToString(v float64, base uint, u string, level VUnitLevel) string 
 
 	return fmt.Sprintf("%.02f %s", v, s)
 }
+
+func FormatVToString(v float64, base uint, u string) string {
+	return FormatVExToString(v, base, u, CalcVUnitLevel(v, base))
+}
