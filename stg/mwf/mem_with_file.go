@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/sgostarter/libeasygo/pathutils"
+	"github.com/sgostarter/i/stg"
+	"github.com/sgostarter/libeasygo/stg/fs/rawfs"
 )
 
 type Serial interface {
@@ -26,14 +27,20 @@ type MemWithFile[T any, S Serial, L Lock] struct {
 	lock   L
 
 	fileName string
+	storage  stg.FileStorage
 }
 
-func NewMemWithFile[T any, S Serial, L Lock](d T, serial S, lock L, fileName string) *MemWithFile[T, S, L] {
+func NewMemWithFile[T any, S Serial, L Lock](d T, serial S, lock L, fileName string, storage stg.FileStorage) *MemWithFile[T, S, L] {
+	if storage == nil && fileName != "" {
+		storage = rawfs.NewFSStorage("")
+	}
+
 	mwf := &MemWithFile[T, S, L]{
 		memD:     d,
 		serial:   serial,
 		lock:     lock,
 		fileName: fileName,
+		storage:  storage,
 	}
 
 	_ = mwf.load()
@@ -67,9 +74,7 @@ func (mwf *MemWithFile[T, S, L]) load() error {
 		return nil
 	}
 
-	_ = pathutils.MustDirOfFileExists(mwf.fileName)
-
-	d, err := os.ReadFile(mwf.fileName)
+	d, err := mwf.storage.ReadFile(mwf.fileName)
 	if err != nil {
 		if _, ok := err.(*os.PathError); ok {
 			err = nil
@@ -100,7 +105,7 @@ func (mwf *MemWithFile[T, S, L]) save() error {
 		return err
 	}
 
-	err = os.WriteFile(mwf.fileName, d, os.ModePerm)
+	err = mwf.storage.WriteFile(mwf.fileName, d)
 	if err != nil {
 		return err
 	}

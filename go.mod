@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/godruoyi/go-snowflake v0.0.2
-	github.com/sgostarter/i v0.1.14
+	github.com/sgostarter/i v0.1.15
 	github.com/sgostarter/libconfig v0.0.1
 	github.com/spf13/cast v1.5.1
 	github.com/stretchr/testify v1.8.4
@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/boltdb/bolt v1.3.1
 	github.com/golang/snappy v0.0.4
 	github.com/kardianos/service v1.2.2
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
@@ -23,6 +24,7 @@ require (
 	go.mongodb.org/mongo-driver v1.13.0
 	golang.org/x/crypto v0.15.0
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
+	golang.org/x/sys v0.14.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -51,7 +53,8 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/net v0.11.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
+
+// replace github.com/sgostarter/i => ../../work_sgostarter/i

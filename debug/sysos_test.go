@@ -65,3 +65,17 @@ func TestGetNetIOInfo(t *testing.T) {
 	t.Logf("send bytes: %d, recv bytes: %d",
 		i2.BytesSent-i1.BytesSent, i2.BytesRecv-i1.BytesRecv)
 }
+
+// nolint
+func TestGetOutNetIOInfo(t *testing.T) {
+	i1, err := GetOutNetIOInfo()
+	assert.Nil(t, err)
+
+	time.Sleep(time.Second * 3)
+
+	i2, err := GetOutNetIOInfo()
+	assert.Nil(t, err)
+
+	t.Logf("send bytes: %d, recv bytes: %d",
+		i2.BytesSent-i1.BytesSent, i2.BytesRecv-i1.BytesRecv)
+}

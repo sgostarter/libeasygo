@@ -8,10 +8,10 @@ import (
 )
 
 func TestMemAndFile1(t *testing.T) {
-	mm := mwf.NewMemWithFile[map[int]string, mwf.Serial, mwf.Lock](make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt")
+	mm := mwf.NewMemWithFile[map[int]string, mwf.Serial, mwf.Lock](make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt", nil)
 	t.Log(mm)
 
-	memWithFile := mwf.NewMemWithFile(make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt")
+	memWithFile := mwf.NewMemWithFile(make(map[int]string), &mwf.JSONSerial{}, &mwf.NoLock{}, "utStorage.txt", nil)
 	assert.NotNil(t, memWithFile)
 
 	_ = memWithFile.Change(func(m map[int]string) (map[int]string, error) {

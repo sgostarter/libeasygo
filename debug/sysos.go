@@ -2,6 +2,7 @@ package debug
 
 import (
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/cpu"
@@ -158,6 +159,65 @@ func GetNetIOInfo() (info *NetIOInfo, err error) {
 	info = &NetIOInfo{
 		BytesSent: countersStats[0].BytesSent,
 		BytesRecv: countersStats[0].BytesRecv,
+	}
+
+	return
+}
+
+func GetOutNetIOInfo() (info *NetIOInfo, err error) {
+	return GetOutNetIOInfoEx("")
+}
+
+func GetOutNetIOInfoEx(iName string) (info *NetIOInfo, err error) {
+	countersStats, err := net.IOCounters(true)
+	if err != nil {
+		return
+	}
+
+	var countersStat *net.IOCountersStat
+
+	selectedCountersStats := make([]net.IOCountersStat, 0, 10)
+	otherCountersStats := make([]net.IOCountersStat, 0, 10)
+
+	for idx := 0; idx < len(countersStats); idx++ {
+		if iName != "" && countersStats[idx].Name == iName {
+			countersStat = &countersStats[idx]
+
+			break
+		}
+
+		if strings.HasPrefix(countersStats[idx].Name, "lo") {
+			continue
+		}
+
+		if countersStats[idx].BytesSent == 0 && countersStats[idx].BytesRecv == 0 {
+			continue
+		}
+
+		if countersStats[idx].Name == "en0" || countersStats[idx].Name == "eth0" {
+			selectedCountersStats = append(selectedCountersStats, countersStats[idx])
+		} else {
+			otherCountersStats = append(otherCountersStats, countersStats[idx])
+		}
+	}
+
+	if countersStat == nil {
+		if len(selectedCountersStats) > 0 {
+			countersStat = &selectedCountersStats[0]
+		}
+	}
+
+	if countersStat == nil {
+		if len(otherCountersStats) > 0 {
+			countersStat = &otherCountersStats[0]
+		}
+	}
+
+	info = &NetIOInfo{}
+
+	if countersStat != nil {
+		info.BytesSent = countersStat.BytesSent
+		info.BytesRecv = countersStat.BytesRecv
 	}
 
 	return

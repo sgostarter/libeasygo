@@ -5,12 +5,17 @@ import (
 	"sync"
 
 	"github.com/sgostarter/i/commerr"
+	"github.com/sgostarter/i/stg"
 	"github.com/sgostarter/libeasygo/stg/kv"
 )
 
 func NewKV(file string) kv.StorageTiny {
+	return NewKVEx(file, nil)
+}
+
+func NewKVEx(file string, storage stg.FileStorage) kv.StorageTiny {
 	return &kvImpl{
-		d: NewMemWithFile[map[string]string, Serial, Lock](make(map[string]string), &JSONSerial{}, &sync.RWMutex{}, file),
+		d: NewMemWithFile[map[string]string, Serial, Lock](make(map[string]string), &JSONSerial{}, &sync.RWMutex{}, file, storage),
 	}
 }
 
