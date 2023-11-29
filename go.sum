@@ -55,8 +55,8 @@ github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c/go.mod h1:Om
 github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 h1:f/FNXud6gA3MNr8meMVVGxhp+QBTqY91tM8HjEuMjGg=
 github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3/go.mod h1:HgjTstvQsPGkxUsCd2KWxErBblirPizecHcpD3ffK+s=
 github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
-github.com/sgostarter/i v0.1.15 h1:kNIXfGa4y065HEvrvhlVriB6N4d4ofNsgx9FhyU8CMU=
-github.com/sgostarter/i v0.1.15/go.mod h1:AQ1Z3CmrfLm09U8qn5XAuor/px/n2gJErhfLkgSsEto=
+github.com/sgostarter/i v0.1.16 h1:bSKlC3PdXmbx8TiUVCFicQhgMbqoMSpDa9pzw0NS+7I=
+github.com/sgostarter/i v0.1.16/go.mod h1:AQ1Z3CmrfLm09U8qn5XAuor/px/n2gJErhfLkgSsEto=
 github.com/sgostarter/libconfig v0.0.1 h1:6V1YTFjr3fbN9qXeQ0KnmAmerQnGKxrZm3fGdZVtCc4=
 github.com/sgostarter/libconfig v0.0.1/go.mod h1:5KLny8g++hHgCBbsMYRpxSUsJIi77h/3/CftIiWJox8=
 github.com/shirou/gopsutil/v3 v3.23.10 h1:/N42opWlYzegYaVkWejXWJpbzKv2JDy3mrgGzKsh9hM=
