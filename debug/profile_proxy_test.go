@@ -8,5 +8,5 @@ import (
 func TestRunProfileProxy(t *testing.T) {
 	t.SkipNow()
 
-	_ = RunProfileProxy(":10000", os.Getenv("token"))
+	_ = RunProfileProxyEx(":10000", os.Getenv("token"), nil)
 }

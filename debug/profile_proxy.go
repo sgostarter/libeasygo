@@ -8,7 +8,8 @@ import (
 )
 
 type proxyHandler struct {
-	token string
+	token      string
+	respOutput ResponseOutput
 }
 
 func (impl *proxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -59,18 +60,45 @@ func (impl *proxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(resp.StatusCode)
-	_, _ = io.Copy(w, resp.Body)
+
+	if impl.respOutput == nil {
+		w.WriteHeader(resp.StatusCode)
+
+		_, _ = io.Copy(w, resp.Body)
+
+		return
+	}
+
+	_ = impl.respOutput(w, resp.Body)
 }
 
+type ResponseOutput func(writer io.Writer, body io.Reader) error
+
 func RunProfileProxy(address, token string) error {
+	return RunProfileProxyEx(address, token, nil)
+}
+func RunProfileProxyEx(address, token string, respOutput ResponseOutput) error {
 	server := &http.Server{
 		Addr:        address,
 		ReadTimeout: time.Second * 6,
 		Handler: &proxyHandler{
-			token: token,
+			token:      token,
+			respOutput: respOutput,
 		},
 	}
 
 	return server.ListenAndServe()
+}
+
+func RunProfileProxyTLS(address, token string, certFile, keyFile string, respOutput ResponseOutput) error {
+	server := &http.Server{
+		Addr:        address,
+		ReadTimeout: time.Second * 6,
+		Handler: &proxyHandler{
+			token:      token,
+			respOutput: respOutput,
+		},
+	}
+
+	return server.ListenAndServeTLS(certFile, keyFile)
 }
