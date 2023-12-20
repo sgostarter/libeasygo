@@ -3,9 +3,14 @@ package mwf
 import "encoding/json"
 
 type JSONSerial struct {
+	MarshalIndent bool
 }
 
 func (serial *JSONSerial) Marshal(t any) ([]byte, error) {
+	if serial.MarshalIndent {
+		return json.MarshalIndent(t, "", "\t")
+	}
+
 	return json.Marshal(t)
 }
 

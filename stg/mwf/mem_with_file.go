@@ -1,7 +1,6 @@
 package mwf
 
 import (
-	"encoding/json"
 	"os"
 
 	"github.com/sgostarter/i/stg"
@@ -100,7 +99,7 @@ func (mwf *MemWithFile[T, S, L]) save() error {
 		return nil
 	}
 
-	d, err := json.Marshal(mwf.memD)
+	d, err := mwf.serial.Marshal(mwf.memD)
 	if err != nil {
 		return err
 	}
