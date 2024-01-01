@@ -103,7 +103,7 @@ func OSPing(host string) (latency time.Duration, err error) {
 		return
 	}
 
-	latency = time.Millisecond * time.Duration(f)
+	latency = time.Microsecond * time.Duration(f*1000)
 
 	return
 }
