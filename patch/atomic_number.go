@@ -42,3 +42,31 @@ func (n *AtomicNumber[T]) Dec() T {
 
 	return n.v
 }
+
+func (n *AtomicNumber[T]) Add(delta T) T {
+	n.lock.Lock()
+	defer n.lock.Unlock()
+
+	n.v += delta
+
+	return n.v
+}
+
+func (n *AtomicNumber[T]) Sub(delta T) T {
+	n.lock.Lock()
+	defer n.lock.Unlock()
+
+	n.v -= delta
+
+	return n.v
+}
+
+func (n *AtomicNumber[T]) Swap(val T) (old T) {
+	n.lock.Lock()
+	defer n.lock.Unlock()
+
+	old = n.v
+	n.v = val
+
+	return
+}
