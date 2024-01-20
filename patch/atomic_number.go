@@ -7,7 +7,7 @@ import (
 )
 
 type AtomicNumber[T constraints.Integer | constraints.Float] struct {
-	lock sync.RWMutex
+	lock sync.Mutex
 	v    T
 }
 
