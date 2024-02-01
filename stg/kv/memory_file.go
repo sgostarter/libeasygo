@@ -7,12 +7,18 @@ import (
 
 	"github.com/sgostarter/i/commerr"
 	"github.com/sgostarter/libeasygo/pathutils"
+	"gopkg.in/yaml.v3"
 )
 
 func NewMemoryFileStorage(fileName string) (StorageTiny, error) {
+	return NewMemoryFileStorageEx(fileName, true)
+}
+
+func NewMemoryFileStorageEx(fileName string, useJSON bool) (StorageTiny, error) {
 	impl := &memoryFileStorageImpl{
 		fileName: fileName,
 		m:        make(map[string]string),
+		useJSON:  useJSON,
 	}
 
 	if err := impl.init(); err != nil {
@@ -25,8 +31,9 @@ func NewMemoryFileStorage(fileName string) (StorageTiny, error) {
 type memoryFileStorageImpl struct {
 	fileName string
 
-	mLock sync.Mutex
-	m     map[string]string
+	mLock   sync.Mutex
+	m       map[string]string
+	useJSON bool
 }
 
 //
@@ -55,7 +62,8 @@ func (impl *memoryFileStorageImpl) load() error {
 
 	var m map[string]string
 
-	err = json.Unmarshal(d, &m)
+	err = impl.Unmarshal(d, &m)
+
 	if err != nil {
 		return err
 	}
@@ -70,7 +78,7 @@ func (impl *memoryFileStorageImpl) load() error {
 }
 
 func (impl *memoryFileStorageImpl) save() error {
-	d, err := json.Marshal(impl.m)
+	d, err := impl.Marshal(impl.m)
 	if err != nil {
 		return err
 	}
@@ -88,7 +96,7 @@ func (impl *memoryFileStorageImpl) save() error {
 //
 
 func (impl *memoryFileStorageImpl) Set(key string, v interface{}) (err error) {
-	d, err := json.Marshal(v)
+	d, err := impl.Marshal(v)
 	if err != nil {
 		return
 	}
@@ -110,7 +118,7 @@ func (impl *memoryFileStorageImpl) Get(key string, v interface{}) (ok bool, err 
 		return
 	}
 
-	err = json.Unmarshal([]byte(d), v)
+	err = impl.Unmarshal([]byte(d), v)
 	if err != nil {
 		return
 	}
@@ -173,7 +181,8 @@ func (impl *memoryFileStorageImpl) GetList(itemGen func(key string) interface{})
 			break
 		}
 
-		err = json.Unmarshal(value, item)
+		err = impl.Unmarshal(value, item)
+
 		if err != nil {
 			continue
 		}
@@ -206,7 +215,8 @@ func (impl *memoryFileStorageImpl) GetMap(itemGen func(key string) interface{}) 
 			break
 		}
 
-		err = json.Unmarshal(value, item)
+		err = impl.Unmarshal(value, item)
+
 		if err != nil {
 			continue
 		}
@@ -215,4 +225,20 @@ func (impl *memoryFileStorageImpl) GetMap(itemGen func(key string) interface{}) 
 	}
 
 	return
+}
+
+func (impl *memoryFileStorageImpl) Marshal(v any) ([]byte, error) {
+	if impl.useJSON {
+		return json.Marshal(v)
+	}
+
+	return yaml.Marshal(v)
+}
+
+func (impl *memoryFileStorageImpl) Unmarshal(data []byte, v any) error {
+	if impl.useJSON {
+		return json.Unmarshal(data, v)
+	}
+
+	return yaml.Unmarshal(data, v)
 }
