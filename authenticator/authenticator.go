@@ -26,9 +26,12 @@ func GetSecretEx(d []byte) string {
 
 // CreateGoogleAuthQRCodeData 创建二维码
 func CreateGoogleAuthQRCodeData(key string, account string, issuer string) string {
-	qrCode := "otpauth://totp/%s:%s?secret=%s&issuer=%s"
+	if key == "" || account == "" || issuer == "" {
+		return ""
+	}
+
+	qrCode := "otpauth://totp/%s?secret=%s&issuer=%s"
 	qr := fmt.Sprintf(qrCode,
-		encode(issuer),
 		encode(account),
 		encode(key),
 		encode(issuer))
