@@ -33,8 +33,7 @@ func (qps *QPS) Inc() {
 	timeNow := time.Now()
 	d := qps.ds[timeNow.Unix()%int64(len(qps.ds))]
 
-	if d.unix != timeNow.Unix() {
-		d.unix = timeNow.Unix()
+	if atomic.CompareAndSwapInt64(&d.unix, d.unix, timeNow.Unix()) {
 		atomic.StoreInt64(&d.v, 0)
 	}
 
