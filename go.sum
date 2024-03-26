@@ -57,8 +57,8 @@ github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3/go.mod h1:HgjTstv
 github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
 github.com/sgostarter/i v0.1.16 h1:bSKlC3PdXmbx8TiUVCFicQhgMbqoMSpDa9pzw0NS+7I=
 github.com/sgostarter/i v0.1.16/go.mod h1:AQ1Z3CmrfLm09U8qn5XAuor/px/n2gJErhfLkgSsEto=
-github.com/sgostarter/libconfig v0.0.1 h1:6V1YTFjr3fbN9qXeQ0KnmAmerQnGKxrZm3fGdZVtCc4=
-github.com/sgostarter/libconfig v0.0.1/go.mod h1:5KLny8g++hHgCBbsMYRpxSUsJIi77h/3/CftIiWJox8=
+github.com/sgostarter/libconfig v0.0.2 h1:hh9VymOaNKlbAQ6RUOEMKfZpIUQeVmVW38vg9GKU0Sg=
+github.com/sgostarter/libconfig v0.0.2/go.mod h1:5KLny8g++hHgCBbsMYRpxSUsJIi77h/3/CftIiWJox8=
 github.com/shirou/gopsutil/v3 v3.23.10 h1:/N42opWlYzegYaVkWejXWJpbzKv2JDy3mrgGzKsh9hM=
 github.com/shirou/gopsutil/v3 v3.23.10/go.mod h1:JIE26kpucQi+innVlAUnIEOSBhBUkirr5b44yr55+WE=
 github.com/shoenig/go-m1cpu v0.1.6 h1:nxdKQNcEB6vzgA2E2bvzKIYRuNj7XNJ4S/aRSwKzFtM=

@@ -6,7 +6,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/godruoyi/go-snowflake v0.0.2
 	github.com/sgostarter/i v0.1.16
-	github.com/sgostarter/libconfig v0.0.1
+	github.com/sgostarter/libconfig v0.0.2
 	github.com/spf13/cast v1.5.1
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.11.0
@@ -58,3 +58,4 @@ require (
 )
 
 // replace github.com/sgostarter/i => ../../work_sgostarter/i
+// replace github.com/sgostarter/libconfig => ../../work_sgostarter/libconfig
