@@ -12,6 +12,10 @@ func (wr *ResponseWrapper) Apply(code Code, msg string) bool {
 	wr.RawMessage = msg
 	wr.Message = CodeToMessage(code, msg)
 
+	if msg != "" {
+		wr.Code = CodeErrUnknown
+	}
+
 	return wr.Code == CodeSuccess
 }
 

@@ -15,6 +15,7 @@ const (
 	CodeErrBadToken
 	CodeErrNeedAuth
 	CodeErrDisabled
+	CodeErrUnknown
 
 	CodeErrCustomStart = 1000
 	CodeErrCustomEnd   = 3000
