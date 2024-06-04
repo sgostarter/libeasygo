@@ -54,6 +54,7 @@ func (impl *boltFileStorageImpl) splitFilePath(name string) (string, string) {
 func (impl *boltFileStorageImpl) WriteFile(name string, d []byte) error {
 	return impl.db.Update(func(tx *bolt.Tx) (err error) {
 		dir, file := impl.splitFilePath(name)
+
 		bucket, err := tx.CreateBucketIfNotExists([]byte(dir))
 		if err != nil {
 			return
@@ -68,6 +69,7 @@ func (impl *boltFileStorageImpl) WriteFile(name string, d []byte) error {
 func (impl *boltFileStorageImpl) ReadFile(name string) (d []byte, err error) {
 	err = impl.db.View(func(tx *bolt.Tx) error {
 		dir, file := impl.splitFilePath(name)
+
 		bucket := tx.Bucket([]byte(dir))
 		if bucket == nil {
 			return commerr.ErrNotFound

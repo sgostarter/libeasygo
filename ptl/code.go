@@ -9,13 +9,17 @@ type Code int
 
 const (
 	CodeSuccess Code = iota
+	CodeErrUnknown
 	CodeErrCommunication
 	CodeErrInvalidArgs
 	CodeErrInternal
 	CodeErrBadToken
 	CodeErrNeedAuth
 	CodeErrDisabled
-	CodeErrUnknown
+	CodeErrExists
+	CodeErrNotExists
+	CodeLogic
+	CodeConflict
 
 	CodeErrCustomStart = 1000
 	CodeErrCustomEnd   = 3000

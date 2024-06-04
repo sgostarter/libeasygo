@@ -46,6 +46,7 @@ func InitGormWithConfig(cfg DBConfig) (db *gorm.DB, err error) {
 		if cfg.SilentLog {
 			level = logger.Silent
 		}
+
 		db = db.Session(&gorm.Session{
 			Logger: db.Logger.LogMode(level),
 		})

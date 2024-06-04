@@ -21,6 +21,7 @@ func Test_CreateGoogleAuthQRCodeData(t *testing.T) {
 	}
 }
 
+// nolint
 func Test_MakeGoogleAuthenticator(t *testing.T) {
 	tests := []struct {
 		name string

@@ -93,6 +93,7 @@ func (s *AsyncStore) startRoutine() {
 			if storeCounter%600 == 0 || d > 5*s.syncDuration {
 				s.logger.WithFields(l.AnyField("usedTimeMS", d/time.Millisecond)).Info("event_store_dump")
 			}
+
 			storeCounter++
 
 			if storeCounter >= 0x00FFFFFF {

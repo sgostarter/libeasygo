@@ -47,6 +47,7 @@ func (tsk *testDataKey) From(s string) error {
 	return nil
 }
 
+// nolint
 func TestStatisticsMan(t *testing.T) {
 	t.SkipNow()
 

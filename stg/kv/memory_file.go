@@ -83,7 +83,7 @@ func (impl *memoryFileStorageImpl) save() error {
 		return err
 	}
 
-	err = os.WriteFile(impl.fileName, d, os.ModePerm)
+	err = os.WriteFile(impl.fileName, d, 0600)
 	if err != nil {
 		return err
 	}

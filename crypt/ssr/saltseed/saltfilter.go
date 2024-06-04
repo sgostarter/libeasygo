@@ -1,3 +1,4 @@
+// nolint
 package saltseed
 
 import (
@@ -66,6 +67,7 @@ func getSaltFilterSingleton() *BloomRing {
 		if finalCapacity <= 0 {
 			return
 		}
+
 		saltfilter = NewBloomRing(int(finalSlot), int(finalCapacity), finalFPR)
 	})
 

@@ -72,7 +72,7 @@ func (w *Wrapper) mainRoutine() {
 
 		counter++
 
-		err := GroupCmdStart(&cmd, func(cmdW *exec.Cmd) {
+		err := GroupCmdStart(&cmd, func(_ *exec.Cmd) {
 			if counter > 1 {
 				if w.logger != nil {
 					w.logger.OnRestarted(w.tag)

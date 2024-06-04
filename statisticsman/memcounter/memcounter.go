@@ -75,6 +75,7 @@ func (mc *MemCounter) reorder() {
 
 func (mc *MemCounter) Inc() {
 	mc.reorder()
+
 	mc.ds[0].v++
 }
 

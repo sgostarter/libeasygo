@@ -39,7 +39,7 @@ func (sw *ServiceWrapper) Start(serviceImpl ssinterface.ServiceStub) error {
 		return commerr.ErrAlreadyExists
 	}
 
-	sw.routineMan.StartRoutine(func(ctx context.Context, exiting func() bool) {
+	sw.routineMan.StartRoutine(func(ctx context.Context, _ func() bool) {
 		serviceImpl.Run(ctx, sw.logger)
 	}, "")
 

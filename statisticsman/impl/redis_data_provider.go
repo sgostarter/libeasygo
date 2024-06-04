@@ -58,11 +58,17 @@ func (impl *redisDataProviderImpl) scanImpl(k string, cb inters.DataScannerCB, r
 		} else {
 			for idx := 0; idx < len(keys); idx += 2 {
 				var v int64
+
 				v, err = strconv.ParseInt(keys[idx+1], 0, 64)
+				if err != nil {
+					break
+				}
+
 				err = cb(k, keys[idx], v, err)
 				if err != nil {
 					break
 				}
+
 				if reset {
 					err = impl.redisCli.HIncrBy(context.Background(), k, keys[idx], -v).Err()
 					if err != nil {
