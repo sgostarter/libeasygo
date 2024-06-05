@@ -7,6 +7,7 @@ import (
 )
 
 func TestAtomic(t *testing.T) {
-	fn := getCode2MessageFn()
-	assert.Nil(t, fn)
+	fnPre, fnEx := getCode2MessageFn()
+	assert.Nil(t, fnPre)
+	assert.Nil(t, fnEx)
 }

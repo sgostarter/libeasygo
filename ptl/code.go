@@ -28,7 +28,8 @@ const (
 type FNCode2Message func(code Code) (msg string, ok bool)
 
 type fnCode2MessageWrapper struct {
-	fn FNCode2Message
+	fnPre FNCode2Message
+	fnEx  FNCode2Message
 }
 
 var (
@@ -36,22 +37,35 @@ var (
 )
 
 // InstallCode2Message warning, not thread safe
-func InstallCode2Message(f FNCode2Message) {
+func InstallCode2Message(fnPre, fnEx FNCode2Message) {
 	_exCode2Message.Store(&fnCode2MessageWrapper{
-		fn: f,
+		fnPre: fnPre,
+		fnEx:  fnEx,
 	})
 }
 
-func getCode2MessageFn() FNCode2Message {
+func getCode2MessageFn() (fnPre, fnEx FNCode2Message) {
 	wrapper := _exCode2Message.Load()
 	if wrapper == nil {
-		return nil
+		return
 	}
 
-	return wrapper.fn
+	fnPre = wrapper.fnPre
+	fnEx = wrapper.fnEx
+
+	return
 }
 
 func (c Code) String() string {
+	fnPre, fnEx := getCode2MessageFn()
+
+	if fnPre != nil {
+		t, ok := fnPre(c)
+		if ok {
+			return t
+		}
+	}
+
 	switch c {
 	case CodeSuccess:
 		return "成功"
@@ -68,15 +82,15 @@ func (c Code) String() string {
 	case CodeErrDisabled:
 		return "被禁止"
 	default:
-		if fn := getCode2MessageFn(); fn != nil {
-			msg, ok := fn(c)
+		if fnEx != nil {
+			msg, ok := fnEx(c)
 			if ok {
 				return msg
 			}
 		}
 	}
 
-	return fmt.Sprintf("未知错误%d", c)
+	return fmt.Sprintf("Unknow error: %d", c)
 }
 
 func CodeToMessage(code Code, msg string) string {
