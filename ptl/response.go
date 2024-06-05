@@ -1,16 +1,19 @@
 package ptl
 
+import "context"
+
 type ResponseWrapper struct {
-	Code       Code        `json:"code"`
-	Message    string      `json:"message"`
-	Resp       interface{} `json:"resp,omitempty"`
-	RawMessage string      `json:"-" yaml:"-"`
+	Code       Code            `json:"code"`
+	Message    string          `json:"message"`
+	Resp       interface{}     `json:"resp,omitempty"`
+	RawMessage string          `json:"-" yaml:"-"`
+	Ctx        context.Context `json:"-" yaml:"-"`
 }
 
 func (wr *ResponseWrapper) Apply(code Code, msg string) bool {
 	wr.Code = code
 	wr.RawMessage = msg
-	wr.Message = CodeToMessage(code, msg)
+	wr.Message = CodeToMessageWithContext(wr.Ctx, code, msg)
 
 	if msg != "" {
 		wr.Code = CodeErrUnknown

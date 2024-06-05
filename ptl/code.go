@@ -1,6 +1,7 @@
 package ptl
 
 import (
+	"context"
 	"fmt"
 	"sync/atomic"
 )
@@ -18,18 +19,21 @@ const (
 	CodeErrDisabled
 	CodeErrExists
 	CodeErrNotExists
-	CodeLogic
-	CodeConflict
+	CodeErrLogic
+	CodeErrConflict
 
 	CodeErrCustomStart = 1000
 	CodeErrCustomEnd   = 3000
 )
 
 type FNCode2Message func(code Code) (msg string, ok bool)
+type FNCode2MessageWithContext func(ctx context.Context, code Code) (msg string, ok bool)
 
 type fnCode2MessageWrapper struct {
-	fnPre FNCode2Message
-	fnEx  FNCode2Message
+	fnPre            FNCode2Message
+	fnEx             FNCode2Message
+	fnPreWithContext FNCode2MessageWithContext
+	fnExWithContext  FNCode2MessageWithContext
 }
 
 var (
@@ -38,13 +42,20 @@ var (
 
 // InstallCode2Message warning, not thread safe
 func InstallCode2Message(fnPre, fnEx FNCode2Message) {
+	InstallCode2MessageEx(fnPre, fnEx, nil, nil)
+}
+
+// InstallCode2MessageEx warning, not thread safe
+func InstallCode2MessageEx(fnPre, fnEx FNCode2Message, fnPreWithContext, fnExWithContext FNCode2MessageWithContext) {
 	_exCode2Message.Store(&fnCode2MessageWrapper{
-		fnPre: fnPre,
-		fnEx:  fnEx,
+		fnPre:            fnPre,
+		fnEx:             fnEx,
+		fnPreWithContext: fnPreWithContext,
+		fnExWithContext:  fnExWithContext,
 	})
 }
 
-func getCode2MessageFn() (fnPre, fnEx FNCode2Message) {
+func getCode2MessageFn() (fnPre, fnEx FNCode2Message, fnPreWithContext, fnExWithContext FNCode2MessageWithContext) {
 	wrapper := _exCode2Message.Load()
 	if wrapper == nil {
 		return
@@ -52,12 +63,54 @@ func getCode2MessageFn() (fnPre, fnEx FNCode2Message) {
 
 	fnPre = wrapper.fnPre
 	fnEx = wrapper.fnEx
+	fnPreWithContext = wrapper.fnPreWithContext
+	fnExWithContext = wrapper.fnExWithContext
 
 	return
 }
 
+func (c Code) Key() string {
+	switch c {
+	case CodeSuccess:
+		return "CodeSuccess"
+	case CodeErrCommunication:
+		return "CodeErrCommunication"
+	case CodeErrInvalidArgs:
+		return "CodeErrInvalidArgs"
+	case CodeErrInternal:
+		return "CodeErrInternal"
+	case CodeErrBadToken:
+		return "CodeErrBadToken"
+	case CodeErrNeedAuth:
+		return "CodeErrNeedAuth"
+	case CodeErrDisabled:
+		return "CodeErrDisabled"
+	case CodeErrExists:
+		return "CodeErrExists"
+	case CodeErrNotExists:
+		return "CodeErrNotExists"
+	case CodeErrLogic:
+		return "CodeErrLogic"
+	case CodeErrConflict:
+		return "CodeErrConflict"
+	}
+
+	return ""
+}
+
 func (c Code) String() string {
-	fnPre, fnEx := getCode2MessageFn()
+	return c.StringWithContext(context.Background())
+}
+
+func (c Code) StringWithContext(ctx context.Context) string {
+	fnPre, fnEx, fnPreWithContext, fnExWithContext := getCode2MessageFn()
+
+	if fnPreWithContext != nil {
+		t, ok := fnPreWithContext(ctx, c)
+		if ok {
+			return t
+		}
+	}
 
 	if fnPre != nil {
 		t, ok := fnPre(c)
@@ -66,27 +119,22 @@ func (c Code) String() string {
 		}
 	}
 
-	switch c {
-	case CodeSuccess:
-		return "成功"
-	case CodeErrCommunication:
-		return "通信出错"
-	case CodeErrInvalidArgs:
-		return "参数非法"
-	case CodeErrInternal:
-		return "内部错误"
-	case CodeErrBadToken:
-		return "凭证非法"
-	case CodeErrNeedAuth:
-		return "需要授权"
-	case CodeErrDisabled:
-		return "被禁止"
-	default:
-		if fnEx != nil {
-			msg, ok := fnEx(c)
-			if ok {
-				return msg
-			}
+	t := c.Key()
+	if t != "" {
+		return t
+	}
+
+	if fnExWithContext != nil {
+		msg, ok := fnExWithContext(ctx, c)
+		if ok {
+			return msg
+		}
+	}
+
+	if fnEx != nil {
+		msg, ok := fnEx(c)
+		if ok {
+			return msg
 		}
 	}
 
@@ -94,7 +142,11 @@ func (c Code) String() string {
 }
 
 func CodeToMessage(code Code, msg string) string {
-	codeMsg := code.String()
+	return CodeToMessageWithContext(context.Background(), code, msg)
+}
+
+func CodeToMessageWithContext(ctx context.Context, code Code, msg string) string {
+	codeMsg := code.StringWithContext(ctx)
 
 	if msg != "" {
 		codeMsg += ":" + msg
