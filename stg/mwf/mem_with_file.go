@@ -20,6 +20,13 @@ type Lock interface {
 	Unlock()
 }
 
+type EventObserver[T any] interface {
+	BeforeLoad()
+	AfterLoad(memD T, err error)
+	BeforeSave()
+	AfterSave(memD T, err error)
+}
+
 type MemWithFile[T any, S Serial, L Lock] struct {
 	memD   T
 	serial S
@@ -27,9 +34,14 @@ type MemWithFile[T any, S Serial, L Lock] struct {
 
 	fileName string
 	storage  stg.FileStorage
+	ob       EventObserver[T]
 }
 
 func NewMemWithFile[T any, S Serial, L Lock](d T, serial S, lock L, fileName string, storage stg.FileStorage) *MemWithFile[T, S, L] {
+	return NewMemWithFileEx(d, serial, lock, fileName, storage, nil)
+}
+
+func NewMemWithFileEx[T any, S Serial, L Lock](d T, serial S, lock L, fileName string, storage stg.FileStorage, ob EventObserver[T]) *MemWithFile[T, S, L] {
 	if storage == nil && fileName != "" {
 		storage = rawfs.NewFSStorage("")
 	}
@@ -40,6 +52,7 @@ func NewMemWithFile[T any, S Serial, L Lock](d T, serial S, lock L, fileName str
 		lock:     lock,
 		fileName: fileName,
 		storage:  storage,
+		ob:       ob,
 	}
 
 	_ = mwf.load()
@@ -73,10 +86,18 @@ func (mwf *MemWithFile[T, S, L]) load() error {
 		return nil
 	}
 
+	if mwf.ob != nil {
+		mwf.ob.BeforeLoad()
+	}
+
 	d, err := mwf.storage.ReadFile(mwf.fileName)
 	if err != nil {
 		if _, ok := err.(*os.PathError); ok {
 			err = nil
+		}
+
+		if mwf.ob != nil {
+			mwf.ob.AfterLoad(mwf.memD, err)
 		}
 
 		return err
@@ -86,10 +107,18 @@ func (mwf *MemWithFile[T, S, L]) load() error {
 
 	err = mwf.serial.Unmarshal(d, &m)
 	if err != nil {
+		if mwf.ob != nil {
+			mwf.ob.AfterLoad(mwf.memD, err)
+		}
+
 		return err
 	}
 
 	mwf.memD = m
+
+	if mwf.ob != nil {
+		mwf.ob.AfterLoad(mwf.memD, nil)
+	}
 
 	return nil
 }
@@ -99,14 +128,30 @@ func (mwf *MemWithFile[T, S, L]) save() error {
 		return nil
 	}
 
+	if mwf.ob != nil {
+		mwf.ob.BeforeSave()
+	}
+
 	d, err := mwf.serial.Marshal(mwf.memD)
 	if err != nil {
+		if mwf.ob != nil {
+			mwf.ob.AfterSave(mwf.memD, err)
+		}
+
 		return err
 	}
 
 	err = mwf.storage.WriteFile(mwf.fileName, d)
 	if err != nil {
+		if mwf.ob != nil {
+			mwf.ob.AfterSave(mwf.memD, err)
+		}
+
 		return err
+	}
+
+	if mwf.ob != nil {
+		mwf.ob.AfterSave(mwf.memD, nil)
 	}
 
 	return nil
