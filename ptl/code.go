@@ -21,6 +21,7 @@ const (
 	CodeErrNotExists
 	CodeErrLogic
 	CodeErrConflict
+	CodeErrUnimplemented
 
 	CodeErrCustomStart = 1000
 	CodeErrCustomEnd   = 3000
@@ -93,6 +94,8 @@ func (c Code) Key() string {
 		return "CodeErrLogic"
 	case CodeErrConflict:
 		return "CodeErrConflict"
+	case CodeErrUnimplemented:
+		return "CodeErrUnimplemented"
 	}
 
 	return ""
