@@ -22,6 +22,9 @@ const (
 	CodeErrLogic
 	CodeErrConflict
 	CodeErrUnimplemented
+	CodeErrInvalidToken
+	CodeErrVerify
+	CodeErrResourceExhausted
 
 	CodeErrCustomStart = 1000
 	CodeErrCustomEnd   = 3000
@@ -96,6 +99,10 @@ func (c Code) Key() string {
 		return "CodeErrConflict"
 	case CodeErrUnimplemented:
 		return "CodeErrUnimplemented"
+	case CodeErrInvalidToken:
+		return "CodeErrInvalidToken"
+	case CodeErrVerify:
+		return "CodeErrVerify"
 	}
 
 	return ""
