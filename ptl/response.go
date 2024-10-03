@@ -10,6 +10,10 @@ type ResponseWrapper struct {
 	Ctx        context.Context `json:"-" yaml:"-"`
 }
 
+func (wr *ResponseWrapper) ApplyCodeError(ce CodeError) bool {
+	return wr.Apply(ce.GetCode(), ce.GetMsg())
+}
+
 func (wr *ResponseWrapper) Apply(code Code, msg string) bool {
 	wr.Code = code
 	wr.RawMessage = msg
