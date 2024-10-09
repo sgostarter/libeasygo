@@ -156,11 +156,9 @@ func CodeToMessage(code Code, msg string) string {
 }
 
 func CodeToMessageWithContext(ctx context.Context, code Code, msg string) string {
-	codeMsg := code.StringWithContext(ctx)
-
 	if msg != "" {
-		codeMsg += ":" + msg
+		return msg
 	}
 
-	return codeMsg
+	return code.StringWithContext(ctx)
 }
