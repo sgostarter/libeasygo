@@ -18,6 +18,7 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/golang/snappy v0.0.4
 	github.com/kardianos/service v1.2.2
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3
 	github.com/shirou/gopsutil/v3 v3.23.10
 	github.com/tdewolff/minify/v2 v2.20.6
