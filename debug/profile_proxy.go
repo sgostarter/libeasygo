@@ -29,8 +29,10 @@ func (impl *proxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = io.NopCloser(bytes.NewReader(body))
 
+	targetURL := target + r.RequestURI
+
 	// nolint: noctx
-	proxyReq, _ := http.NewRequest(r.Method, target+r.RequestURI, bytes.NewReader(body))
+	proxyReq, _ := http.NewRequest(r.Method, targetURL, bytes.NewReader(body))
 
 	proxyReq.Header = make(http.Header)
 	for h, val := range r.Header {
@@ -69,10 +71,10 @@ func (impl *proxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = impl.respOutput(w, resp.Body)
+	_ = impl.respOutput(targetURL, w, resp.Body)
 }
 
-type ResponseOutput func(writer io.Writer, body io.Reader) error
+type ResponseOutput func(url string, writer io.Writer, body io.Reader) error
 
 func RunProfileProxy(address, token string) error {
 	return RunProfileProxyEx(address, token, nil)
