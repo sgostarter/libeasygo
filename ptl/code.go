@@ -25,6 +25,8 @@ const (
 	CodeErrInvalidToken
 	CodeErrVerify
 	CodeErrResourceExhausted
+	CodeErrPartSuccess
+	CodeErrFail
 
 	CodeErrCustomStart = 1000
 	CodeErrCustomEnd   = 3000
@@ -103,6 +105,12 @@ func (c Code) Key() string {
 		return "CodeErrInvalidToken"
 	case CodeErrVerify:
 		return "CodeErrVerify"
+	case CodeErrResourceExhausted:
+		return "CodeErrResourceExhausted"
+	case CodeErrPartSuccess:
+		return "CodeErrPartSuccess"
+	case CodeErrFail:
+		return "CodeErrFail"
 	}
 
 	return ""

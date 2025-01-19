@@ -155,13 +155,16 @@ func (mwf *MemWithFile[T, S, L]) save() error {
 		return err
 	}
 
-	err = os.Rename(mwf.fileName, mwf.tmpFile())
-	if err != nil {
-		if mwf.ob != nil {
-			mwf.ob.AfterSave(mwf.memD, err)
-		}
+	ok, err := pathutils.IsFileExists(mwf.fileName)
+	if err == nil && ok {
+		err = os.Rename(mwf.fileName, mwf.tmpFile())
+		if err != nil {
+			if mwf.ob != nil {
+				mwf.ob.AfterSave(mwf.memD, err)
+			}
 
-		return nil
+			return err
+		}
 	}
 
 	err = mwf.storage.WriteFile(mwf.fileName, d)
