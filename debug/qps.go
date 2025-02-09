@@ -30,6 +30,10 @@ type qpsData struct {
 }
 
 func (qps *QPS) Inc() {
+	qps.IncN(1)
+}
+
+func (qps *QPS) IncN(n int64) {
 	timeNow := time.Now()
 	d := qps.ds[timeNow.Unix()%int64(len(qps.ds))]
 
@@ -37,7 +41,7 @@ func (qps *QPS) Inc() {
 		atomic.StoreInt64(&d.v, 0)
 	}
 
-	atomic.AddInt64(&d.v, 1)
+	atomic.AddInt64(&d.v, n)
 }
 
 func (qps *QPS) Gets() []int64 {
