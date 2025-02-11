@@ -11,8 +11,10 @@ type QPS struct {
 
 func NewQPS(cnt int) *QPS {
 	if cnt <= 0 {
-		cnt = 2
+		cnt = 1
 	}
+
+	cnt++ // n + 1tmp
 
 	ds := make([]*qpsData, cnt)
 	for idx := 0; idx < len(ds); idx++ {
