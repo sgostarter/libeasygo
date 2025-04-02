@@ -38,6 +38,9 @@ type MemWithFile[T any, S Serial, L Lock] struct {
 	fileName string
 	storage  stg.FileStorage
 	ob       EventObserver[T]
+
+	changedFlag      bool
+	autoSaveInterval time.Duration
 }
 
 func NewMemWithFile[T any, S Serial, L Lock](d T, serial S, lock L, fileName string, storage stg.FileStorage) *MemWithFile[T, S, L] {
@@ -45,22 +48,48 @@ func NewMemWithFile[T any, S Serial, L Lock](d T, serial S, lock L, fileName str
 }
 
 func NewMemWithFileEx[T any, S Serial, L Lock](d T, serial S, lock L, fileName string, storage stg.FileStorage, ob EventObserver[T]) *MemWithFile[T, S, L] {
+	return NewMemWithFileEx1(d, serial, lock, fileName, storage, ob, 0)
+}
+
+func NewMemWithFileEx1[T any, S Serial, L Lock](d T, serial S, lock L, fileName string, storage stg.FileStorage,
+	ob EventObserver[T], autoSaveInterval time.Duration) *MemWithFile[T, S, L] {
 	if storage == nil && fileName != "" {
 		storage = rawfs.NewFSStorage("")
 	}
 
 	mwf := &MemWithFile[T, S, L]{
-		memD:     d,
-		serial:   serial,
-		lock:     lock,
-		fileName: fileName,
-		storage:  storage,
-		ob:       ob,
+		memD:             d,
+		serial:           serial,
+		lock:             lock,
+		fileName:         fileName,
+		storage:          storage,
+		ob:               ob,
+		autoSaveInterval: autoSaveInterval,
 	}
 
 	_ = mwf.load()
 
+	if autoSaveInterval > 0 {
+		go mwf.autoSaveRoutine()
+	}
+
 	return mwf
+}
+
+func (mwf *MemWithFile[T, S, L]) autoSaveRoutine() {
+	for {
+		time.Sleep(mwf.autoSaveInterval)
+
+		mwf.lock.Lock()
+
+		if mwf.changedFlag {
+			mwf.changedFlag = false
+
+			_ = mwf.save()
+		}
+
+		mwf.lock.Unlock()
+	}
 }
 
 func (mwf *MemWithFile[T, S, L]) Read(proc func(memD T)) {
@@ -81,7 +110,13 @@ func (mwf *MemWithFile[T, S, L]) Change(proc func(memD T) (newMemD T, err error)
 
 	mwf.memD = newMemD
 
-	return mwf.save()
+	if mwf.autoSaveInterval <= 0 {
+		return mwf.save()
+	}
+
+	mwf.changedFlag = true
+
+	return nil
 }
 
 func (mwf *MemWithFile[T, S, L]) load() error {
