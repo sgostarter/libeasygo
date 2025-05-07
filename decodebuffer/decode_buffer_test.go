@@ -64,3 +64,22 @@ func TestDecodeBuffer2(t *testing.T) {
 	assert.EqualValues(t, "b", string(e))
 
 }
+
+func TestDecodeBuffer3(t *testing.T) {
+	buf := NewBufferEx(nil, []byte("abc"))
+
+	rule := NewRuleTerminator([]byte("1"))
+	buf.SetDecodeRule(rule)
+
+	_, ok := buf.PeekTerminator()
+	assert.False(t, ok)
+
+	buf.Append([]byte("1d"))
+
+	d, ok := buf.PeekTerminator()
+	assert.True(t, ok)
+	assert.EqualValues(t, "abc", string(d))
+
+	d = buf.GetBuffer()
+	assert.EqualValues(t, "abc1d", string(d))
+}
